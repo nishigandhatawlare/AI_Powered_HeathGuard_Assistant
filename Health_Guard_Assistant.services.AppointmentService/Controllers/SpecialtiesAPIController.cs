@@ -1,0 +1,152 @@
+﻿using Health_Guard_Assistant.services.AppointmentService.Data;
+using Health_Guard_Assistant.services.AppointmentService.Models.Dto;
+using Health_Guard_Assistant.services.AppointmentService.Models;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+
+namespace Health_Guard_Assistant.services.AppointmentService.Controllers
+{
+    [Route("api/[controller]")]
+    [ApiController]
+    public class SpecialtiesAPIController : ControllerBase
+    {
+
+        private readonly AppDbContext _db;
+        private ResponseDto _response;
+        public SpecialtiesAPIController(AppDbContext db)
+        {
+            _db = db;
+            _response = new ResponseDto();
+        }
+        // GET: api/appointments
+        [HttpGet]
+        public ResponseDto GetSpecialties()
+        {
+            try
+            {
+                IEnumerable<Specialty> specialties= _db.Specialties.ToList();
+                _response.Result = specialties;
+                _response.IsSuccess = true;
+                _response.Message = "specialties Data retrieved successfully!";
+            }
+            catch (Exception ex)
+            {
+                _response.IsSuccess = false;
+                _response.Message = ex.Message;
+            }
+            return _response;
+        }
+        // GET: api/appointments/{id}
+        [HttpGet("{id:int}")]
+        public ResponseDto GetSpecialty(int id)
+        {
+            try
+            {
+                Specialty specialty = _db.Specialties.First(u => u.SpecialtyId == id);
+                _response.Result = specialty;
+                _response.IsSuccess = true;
+                _response.Message = $"specialty Data retrieved successfully with id = {id}!";
+            }
+            catch (Exception ex)
+            {
+                _response.IsSuccess = false;
+                _response.Message = ex.Message;
+            }
+            return _response;
+        }
+
+        // POST: api/appointments
+        [HttpPost]
+        public ResponseDto CreateSpecialty([FromBody] Specialty specialty)
+        {
+            try
+            {
+                if (specialty == null)
+                {
+                    _response.IsSuccess = false;
+                    _response.Message = "Invalid provider data.";
+                    return _response;
+                }
+                //add new providers to the database
+                _db.Specialties.Add(specialty);
+                _db.SaveChanges();
+                _response.Result = specialty;
+                _response.IsSuccess = true;
+                _response.Message = "specialty created successfully.";
+
+            }
+            catch (Exception ex)
+            {
+                _response.IsSuccess = false;
+                _response.Message = ex.Message;
+            }
+            return _response;
+        }
+
+        // PUT: api/appointments/{id}
+        [HttpPut("{id:int}")]
+        public ResponseDto UpdateSpecialty(int id, [FromBody] Specialty specialty)
+        {
+            try
+            {
+                if (specialty == null)
+                {
+                    _response.IsSuccess = false;
+                    _response.Message = "Invalid specialty data.";
+                    return _response;
+                }
+                //retrive existing providers data from Database
+                var existingData = _db.Specialties.FirstOrDefault(u => u.SpecialtyId == id);
+                if (existingData == null)
+                {
+                    _response.IsSuccess = false;
+                    _response.Message = "specialty data not found.";
+                    return _response;
+                }
+                //update providers 
+                existingData.Name = specialty.Name;
+                _db.SaveChanges();
+                _response.Result = existingData;
+                _response.IsSuccess = true;
+                _response.Message = "specialty updated successfully.";
+
+            }
+            catch (Exception ex)
+            {
+                _response.IsSuccess = false;
+                _response.Message = ex.Message;
+            }
+            return _response;
+        }
+
+        // DELETE: api/appointments/{id}
+        [HttpDelete("{id}")]
+        public ResponseDto DeleteSpecialty(int id)
+        {
+            try
+            {
+                //retrive extisting provider
+                var existingappointment = _db.Specialties.FirstOrDefault(u => u.SpecialtyId == id);
+                if (existingappointment == null)
+                {
+                    _response.IsSuccess = false;
+                    _response.Message = $"Appointment not found for id = {id}";
+                    return _response;
+                }
+                //remove provider from db
+                _db.Specialties.Remove(existingappointment);
+                _db.SaveChanges();
+
+                _response.IsSuccess = true;
+                _response.Message = $"Data with SpecialtyId {id} deleted successfully!";
+
+            }
+            catch (Exception ex)
+            {
+                _response.IsSuccess = false;
+                _response.Message = ex.Message;
+            }
+            return _response;
+        }
+    }
+}
