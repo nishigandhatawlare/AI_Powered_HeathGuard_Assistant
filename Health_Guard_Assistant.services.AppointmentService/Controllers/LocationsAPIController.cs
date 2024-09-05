@@ -3,6 +3,7 @@ using Health_Guard_Assistant.services.AppointmentService.Models.Dto;
 using Health_Guard_Assistant.services.AppointmentService.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using AutoMapper;
 
 namespace Health_Guard_Assistant.services.AppointmentService.Controllers
 {
@@ -12,10 +13,12 @@ namespace Health_Guard_Assistant.services.AppointmentService.Controllers
     {
         private readonly AppDbContext _db;
         private ResponseDto _responce;
-        public LocationsAPIController(AppDbContext db)
+        private IMapper _mapper;
+        public LocationsAPIController(AppDbContext db, IMapper mapper)
         {
             _db = db;
             _responce = new ResponseDto();
+            _mapper = mapper;
         }
         // GET: api/providers
         [HttpGet]
@@ -24,7 +27,7 @@ namespace Health_Guard_Assistant.services.AppointmentService.Controllers
             try
             {
                 IEnumerable<Location> locations = _db.Locations.ToList();
-                _responce.Result = locations;
+                _responce.Result = _mapper.Map<IEnumerable<LocationDto>>(locations);
                 _responce.IsSuccess = true;
                 _responce.Message = "locations retrieved successfully.";
             }
@@ -43,7 +46,7 @@ namespace Health_Guard_Assistant.services.AppointmentService.Controllers
             try
             {
                 Location locations = _db.Locations.First(u => u.LocationId == id);
-                _responce.Result = locations;
+                _responce.Result = _mapper.Map<LocationDto>(locations);
                 _responce.IsSuccess = true;
                 _responce.Message = "locations retrieved successfully.";
             }

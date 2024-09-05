@@ -1,4 +1,5 @@
-﻿using Azure;
+﻿using AutoMapper;
+using Azure;
 using Health_Guard_Assistant.services.AppointmentService.Data;
 using Health_Guard_Assistant.services.AppointmentService.Models;
 using Health_Guard_Assistant.services.AppointmentService.Models.Dto;
@@ -13,10 +14,12 @@ namespace Health_Guard_Assistant.services.AppointmentService.Controllers
     {
         private readonly AppDbContext _db;
         private ResponseDto _response;
-        public AppointmentAPIController(AppDbContext db)
+        private IMapper _mapper;
+        public AppointmentAPIController(AppDbContext db, IMapper mapper)
         {
             _db = db;
             _response = new ResponseDto();
+            _mapper = mapper;
         }
         // GET: api/appointments
         [HttpGet]
@@ -25,7 +28,7 @@ namespace Health_Guard_Assistant.services.AppointmentService.Controllers
             try
             {
                 IEnumerable<Appointment> appointments = _db.Appointments.ToList();
-                _response.Result = appointments;
+                _response.Result = _mapper.Map<IEnumerable<AppointmentDto>>(appointments);
                 _response.IsSuccess = true;
                 _response.Message = "Appointment Data retrieved successfully!";
             }
@@ -43,7 +46,7 @@ namespace Health_Guard_Assistant.services.AppointmentService.Controllers
             try
             {
                 Appointment appointments = _db.Appointments.First(u => u.AppointmentId == id);
-                _response.Result = appointments;
+                _response.Result = _mapper.Map<AppointmentDto>(appointments);
                 _response.IsSuccess = true;
                 _response.Message = $"Appointment Data retrieved successfully with id = {id}!";
             }

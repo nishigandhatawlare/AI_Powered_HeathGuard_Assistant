@@ -1,4 +1,5 @@
-﻿using Health_Guard_Assistant.services.AppointmentService.Data;
+﻿using AutoMapper;
+using Health_Guard_Assistant.services.AppointmentService.Data;
 using Health_Guard_Assistant.services.AppointmentService.Models;
 using Health_Guard_Assistant.services.AppointmentService.Models.Dto;
 using Microsoft.AspNetCore.Http;
@@ -13,10 +14,12 @@ namespace Health_Guard_Assistant.services.AppointmentService.Controllers
     {
         private readonly AppDbContext _db;
         private ResponseDto _responce;
-        public ProvidersAPIController(AppDbContext db)
+        private readonly IMapper _mapper;
+        public ProvidersAPIController(AppDbContext db,IMapper mapper)
         {
             _db = db;
             _responce = new ResponseDto();
+            _mapper = mapper;
         }
         // GET: api/providers
         [HttpGet]
@@ -25,7 +28,7 @@ namespace Health_Guard_Assistant.services.AppointmentService.Controllers
             try
             {
                 IEnumerable<HealthcareProvider> providers = _db.HealthcareProviders.ToList();
-                _responce.Result = providers;
+                _responce.Result = _mapper.Map<IEnumerable<HealthcareProviderDto>>(providers);
                 _responce.IsSuccess = true;
                 _responce.Message = "providers retrieved successfully.";
             }
@@ -44,7 +47,7 @@ namespace Health_Guard_Assistant.services.AppointmentService.Controllers
             try
             {
                 HealthcareProvider providers = _db.HealthcareProviders.First(u=>u.ProviderId == id);
-                _responce.Result = providers;
+                _responce.Result = _mapper.Map<HealthcareProviderDto>(providers);
                 _responce.IsSuccess = true;
                 _responce.Message = "providers retrieved successfully.";
             }

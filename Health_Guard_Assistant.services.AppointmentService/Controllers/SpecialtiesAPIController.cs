@@ -3,6 +3,7 @@ using Health_Guard_Assistant.services.AppointmentService.Models.Dto;
 using Health_Guard_Assistant.services.AppointmentService.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using AutoMapper;
 
 namespace Health_Guard_Assistant.services.AppointmentService.Controllers
 {
@@ -13,10 +14,12 @@ namespace Health_Guard_Assistant.services.AppointmentService.Controllers
 
         private readonly AppDbContext _db;
         private ResponseDto _response;
-        public SpecialtiesAPIController(AppDbContext db)
+        private IMapper _mapper;
+        public SpecialtiesAPIController(AppDbContext db,IMapper mapper)
         {
             _db = db;
             _response = new ResponseDto();
+            _mapper = mapper;
         }
         // GET: api/appointments
         [HttpGet]
@@ -25,7 +28,7 @@ namespace Health_Guard_Assistant.services.AppointmentService.Controllers
             try
             {
                 IEnumerable<Specialty> specialties= _db.Specialties.ToList();
-                _response.Result = specialties;
+                _response.Result = _mapper.Map<IEnumerable<SpecialtyDto>>(specialties);
                 _response.IsSuccess = true;
                 _response.Message = "specialties Data retrieved successfully!";
             }
@@ -43,7 +46,7 @@ namespace Health_Guard_Assistant.services.AppointmentService.Controllers
             try
             {
                 Specialty specialty = _db.Specialties.First(u => u.SpecialtyId == id);
-                _response.Result = specialty;
+                _response.Result = _mapper.Map<SpecialtyDto>(specialty);
                 _response.IsSuccess = true;
                 _response.Message = $"specialty Data retrieved successfully with id = {id}!";
             }
