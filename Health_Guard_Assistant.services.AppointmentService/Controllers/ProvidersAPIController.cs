@@ -61,20 +61,21 @@ namespace Health_Guard_Assistant.services.AppointmentService.Controllers
 
         // POST: api/providers
         [HttpPost]
-        public ResponseDto CreateProvider([FromBody] HealthcareProvider provider)
+        public ResponseDto CreateProvider([FromBody] HealthcareProviderDto healthcareProviderDto)
         {
             try
             {
-                if (provider == null)
+                if (healthcareProviderDto == null)
                 {
                     _responce.IsSuccess = false;
                     _responce.Message = "Invalid provider data.";
                     return _responce;
                 }
-                //add new providers to the database
+                //map before adding
+                HealthcareProvider provider = _mapper.Map<HealthcareProvider>(healthcareProviderDto);
                 _db.HealthcareProviders.Add(provider);
                 _db.SaveChanges();
-                _responce.Result = provider;
+                _responce.Result = healthcareProviderDto;
                 _responce.IsSuccess = true;
                 _responce.Message = "Provider created successfully.";
 
@@ -90,11 +91,11 @@ namespace Health_Guard_Assistant.services.AppointmentService.Controllers
 
         // PUT: api/providers/{id}
         [HttpPut("{id:int}")]
-        public ResponseDto UpdateProvider(int id, [FromBody] HealthcareProvider provider)
+        public ResponseDto UpdateProvider(int id, [FromBody] HealthcareProviderDto healthcareProviderDto)
         {
             try
             {
-                if (provider == null) 
+                if (healthcareProviderDto == null) 
                 {
                     _responce.IsSuccess = false;
                     _responce.Message = "Invalid provider data.";
@@ -108,14 +109,10 @@ namespace Health_Guard_Assistant.services.AppointmentService.Controllers
                     _responce.Message = "provider data not found.";
                     return _responce;
                 }
-                //update providers 
-                existingData.Name = provider.Name;
-                existingData.SpecialtyId = provider.SpecialtyId;
-                existingData.LocationId = provider.LocationId;
-                existingData.Availability = provider.Availability;
-
+                
+                _mapper.Map(healthcareProviderDto, existingData);
                 _db.SaveChanges();
-                _responce.Result = existingData;
+                _responce.Result = healthcareProviderDto;
                 _responce.IsSuccess = true;
                 _responce.Message = "Provider updated successfully.";
 

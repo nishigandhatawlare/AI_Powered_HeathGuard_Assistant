@@ -60,20 +60,22 @@ namespace Health_Guard_Assistant.services.AppointmentService.Controllers
 
         // POST: api/providers
         [HttpPost]
-        public ResponseDto CreateLocation([FromBody] Location locations)
+        public ResponseDto CreateLocation([FromBody] LocationDto locationDto)
         {
             try
             {
-                if (locations == null)
+                if (locationDto == null)
                 {
                     _responce.IsSuccess = false;
                     _responce.Message = "Invalid locations data.";
                     return _responce;
                 }
-                //add new providers to the database
-                _db.Locations.Add(locations);
+
+                //first map incoming dto to dbentity then add new location to the database
+                Location location = _mapper.Map<Location>(locationDto);
+                _db.Locations.Add(location);
                 _db.SaveChanges();
-                _responce.Result = locations;
+                _responce.Result = locationDto;
                 _responce.IsSuccess = true;
                 _responce.Message = "locations created successfully.";
 
@@ -89,11 +91,11 @@ namespace Health_Guard_Assistant.services.AppointmentService.Controllers
 
         // PUT: api/providers/{id}
         [HttpPut("{id:int}")]
-        public ResponseDto UpdateLocation(int id, [FromBody] Location locations)
+        public ResponseDto UpdateLocation(int id, [FromBody] LocationDto locationDto)
         {
             try
             {
-                if (locations == null)
+                if (locationDto == null)
                 {
                     _responce.IsSuccess = false;
                     _responce.Message = "Invalid locations data.";
@@ -107,8 +109,9 @@ namespace Health_Guard_Assistant.services.AppointmentService.Controllers
                     _responce.Message = "locations data not found.";
                     return _responce;
                 }
+
                 //update providers 
-                existingData.Name = locations.Name;
+                _mapper.Map(locationDto, existingData);
                 
 
                 _db.SaveChanges();

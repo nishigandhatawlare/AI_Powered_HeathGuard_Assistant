@@ -60,20 +60,22 @@ namespace Health_Guard_Assistant.services.AppointmentService.Controllers
 
         // POST: api/appointments
         [HttpPost]
-        public ResponseDto CreateAppointment([FromBody] Appointment appointment)
+        public ResponseDto CreateAppointment([FromBody] AppointmentDto appointmentdto)
         {
             try
             {
-                if (appointment == null)
+                if (appointmentdto == null)
                 {
                     _response.IsSuccess = false;
                     _response.Message = "Invalid provider data.";
                     return _response;
                 }
+                //map appointmentdto to appointments then add to db
+                Appointment appontments = _mapper.Map<Appointment>(appointmentdto);
                 //add new providers to the database
-                _db.Appointments.Add(appointment);
+                _db.Appointments.Add(appontments);
                 _db.SaveChanges();
-                _response.Result = appointment;
+                _response.Result = appointmentdto;
                 _response.IsSuccess = true;
                 _response.Message = "Appointments created successfully.";
 
@@ -88,11 +90,11 @@ namespace Health_Guard_Assistant.services.AppointmentService.Controllers
 
         // PUT: api/appointments/{id}
         [HttpPut("{id:int}")]
-        public ResponseDto UpdateAppointment(int id, [FromBody] Appointment appointment)
+        public ResponseDto UpdateAppointment(int id, [FromBody] AppointmentDto appointmentdto)
         {
             try
             {
-                if (appointment == null)
+                if (appointmentdto == null)
                 {
                     _response.IsSuccess = false;
                     _response.Message = "Invalid Appointment data.";
@@ -106,14 +108,11 @@ namespace Health_Guard_Assistant.services.AppointmentService.Controllers
                     _response.Message = "Appointment data not found.";
                     return _response;
                 }
-                //update providers 
-                existingData.ProviderId = appointment.ProviderId;
-                existingData.PatientName = appointment.PatientName;
-                existingData.AppointmentDate = appointment.AppointmentDate;
-                existingData.Status = appointment.Status;
 
+                //mapped before update 
+                _mapper.Map(appointmentdto, existingData);
                 _db.SaveChanges();
-                _response.Result = existingData;
+                _response.Result = appointmentdto;
                 _response.IsSuccess = true;
                 _response.Message = "Appointment updated successfully.";
 

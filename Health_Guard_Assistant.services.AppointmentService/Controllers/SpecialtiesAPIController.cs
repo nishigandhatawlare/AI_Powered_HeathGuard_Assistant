@@ -60,17 +60,18 @@ namespace Health_Guard_Assistant.services.AppointmentService.Controllers
 
         // POST: api/appointments
         [HttpPost]
-        public ResponseDto CreateSpecialty([FromBody] Specialty specialty)
+        public ResponseDto CreateSpecialty([FromBody] SpecialtyDto specialtyDto)
         {
             try
             {
-                if (specialty == null)
+                if (specialtyDto == null)
                 {
                     _response.IsSuccess = false;
                     _response.Message = "Invalid provider data.";
                     return _response;
                 }
-                //add new providers to the database
+                //before adding map first
+                Specialty specialty = _mapper.Map<Specialty>(specialtyDto);
                 _db.Specialties.Add(specialty);
                 _db.SaveChanges();
                 _response.Result = specialty;
@@ -88,11 +89,11 @@ namespace Health_Guard_Assistant.services.AppointmentService.Controllers
 
         // PUT: api/appointments/{id}
         [HttpPut("{id:int}")]
-        public ResponseDto UpdateSpecialty(int id, [FromBody] Specialty specialty)
+        public ResponseDto UpdateSpecialty(int id, [FromBody] SpecialtyDto specialtyDto)
         {
             try
             {
-                if (specialty == null)
+                if (specialtyDto == null)
                 {
                     _response.IsSuccess = false;
                     _response.Message = "Invalid specialty data.";
@@ -106,10 +107,11 @@ namespace Health_Guard_Assistant.services.AppointmentService.Controllers
                     _response.Message = "specialty data not found.";
                     return _response;
                 }
-                //update providers 
-                existingData.Name = specialty.Name;
+                //before update map first
+                _mapper.Map(specialtyDto, existingData);
+                //existingData.Name = specialty.Name;
                 _db.SaveChanges();
-                _response.Result = existingData;
+                _response.Result = specialtyDto;
                 _response.IsSuccess = true;
                 _response.Message = "specialty updated successfully.";
 
