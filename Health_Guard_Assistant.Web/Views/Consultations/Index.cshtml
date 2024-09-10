@@ -1,0 +1,70 @@
+﻿@{
+    ViewData["Title"] = "Virtual Consultations";
+    Layout = "_Layout";
+}
+<!DOCTYPE html>
+<html lang="en">
+<head> 
+</head>
+<body>
+
+    <header class="header d-flex justify-content-between align-items-center">
+       
+    </header>
+
+    <main class="main-section">
+        <!-- Video Conferencing Section -->
+        <div class="video-conference card">
+            <h4 class="font-weight-bold">Video Consultation</h4>
+            <div id="video-container">
+                <video id="patient-video" autoplay></video>
+                <video id="doctor-video" autoplay muted></video>
+            </div>
+            <div class="controls d-flex justify-content-around">
+                <button class="btn btn-primary" id="start-call">Start Call</button>
+                <button class="btn btn-danger" id="end-call">End Call</button>
+                <button class="btn btn-secondary" id="mute">Mute</button>
+                <button class="btn btn-secondary" id="unmute">Unmute</button>
+            </div>
+        </div>
+
+        <!-- Real-Time Chat Section -->
+        <div class="real-time-chat card">
+            <h4 class="font-weight-bold">Real-Time Chat</h4>
+            <div id="chat-box">
+                <!-- Chat messages will appear here -->
+            </div>
+            <div class="d-flex mt-3">
+                <input type="text" id="chat-input" placeholder="Type a message...">
+                <button class="btn btn-primary" id="send-chat">Send</button>
+            </div>
+        </div>
+
+        <!-- File Sharing Section -->
+        <div class="file-sharing card">
+            <h4 class="font-weight-bold">Share Files</h4>
+            <input type="file" id="file-upload">
+            <button class="btn btn-primary mt-2" id="send-file">Send File</button>
+        </div>
+
+        <!-- Notes Section -->
+        <div class="notes-section card">
+            <h4 class="font-weight-bold">Consultation Notes</h4>
+            <textarea id="doctor-notes" placeholder="Enter notes here..."></textarea>
+            <button class="btn btn-primary mt-2" id="save-notes">Save Notes</button>
+        </div>
+    </main>
+
+    <!-- Virtual Waiting Room -->
+    <div class="waiting-room card mx-auto my-5" id="waiting-room" style="max-width: 600px;">
+        <h4>Your consultation will begin shortly</h4>
+        <p>Please wait...</p>
+        <img src="loading.gif" alt="Loading">
+    </div>
+
+    <footer class="footer">
+        <p>&copy; 2024 Your Company Name. All rights reserved.</p>
+        <a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a>
+    </footer>
+</body>
+</html>

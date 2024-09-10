@@ -1,0 +1,57 @@
+﻿@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Health Records";
+}
+    <main class="main-section">
+        <!-- Past Consultations Section -->
+        <div class="card">
+            <div class="card-header">Past Consultations</div>
+            <div class="card-body">
+                <ul class="list-group">
+                    <li class="list-group-item">Consultation with Dr. Smith - January 15, 2024</li>
+                    <li class="list-group-item">Consultation with Dr. Jones - February 10, 2024</li>
+                    <li class="list-group-item">Consultation with Dr. Brown - March 5, 2024</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Lab Results Section -->
+        <div class="card">
+            <div class="card-header">Lab Results</div>
+            <div class="card-body">
+                <ul class="list-group">
+                    <li class="list-group-item">Blood Test - January 20, 2024 <button class="btn btn-info btn-sm float-end">Download</button></li>
+                    <li class="list-group-item">X-Ray Report - February 15, 2024 <button class="btn btn-info btn-sm float-end">Download</button></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Prescriptions Section -->
+        <div class="card">
+            <div class="card-header">Prescriptions</div>
+            <div class="card-body">
+                <ul class="list-group">
+                    <li class="list-group-item">Prescription for Blood Pressure Medication - January 25, 2024 <button class="btn btn-info btn-sm float-end">Download</button></li>
+                    <li class="list-group-item">Prescription for Diabetes Medication - February 20, 2024 <button class="btn btn-info btn-sm float-end">Download</button></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- File Upload Section -->
+        <div class="file-upload">
+            <h5 class="section-title">Upload Health Records</h5>
+            <input type="file" class="form-control">
+            <button type="button">Upload</button>
+        </div>
+
+        <!-- Download and Print Buttons -->
+        <div class="download-print-buttons">
+            <button class="btn btn-primary">Download Records</button>
+            <button class="btn btn-secondary">Print Records</button>
+        </div>
+
+        <!-- Sync Devices Section -->
+        <div class="sync-devices">
+            <button type="button">Sync with Devices</button>
+        </div>
+    </main>

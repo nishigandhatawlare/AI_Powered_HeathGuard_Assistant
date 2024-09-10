@@ -1,0 +1,85 @@
+﻿@{
+    ViewData["Title"] = "Appointment Scheduling";
+    Layout = "_Layout";
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+</head>
+<body>
+    <div class="container">
+        <!-- Calendar View -->
+        <div class="card calendar-container">
+            <div class="card-header">Schedule Your Appointment</div>
+            <div class="card-body">
+                <div id="calendar"></div>
+            </div>
+        </div>
+
+        <!-- Healthcare Providers -->
+        <div class="card provider-list">
+            <div class="card-header">Healthcare Providers</div>
+            <div class="card-body">
+                <div class="filter-group mb-3">
+                    <select class="form-select" aria-label="Select Specialty">
+                        <option selected>Select Specialty</option>
+                        <option value="1">Cardiology</option>
+                        <option value="2">Dermatology</option>
+                        <option value="3">Neurology</option>
+                    </select>
+                </div>
+                <div class="filter-group mb-3">
+                    <select class="form-select" aria-label="Select Location">
+                        <option selected>Select Location</option>
+                        <option value="1">New York</option>
+                        <option value="2">Los Angeles</option>
+                        <option value="3">Chicago</option>
+                    </select>
+                </div>
+                <div class="filter-group mb-3">
+                    <select class="form-select" aria-label="Select Availability">
+                        <option selected>Select Availability</option>
+                        <option value="1">Available Today</option>
+                        <option value="2">Available This Week</option>
+                        <option value="3">Available This Month</option>
+                    </select>
+                </div>
+
+                <!-- List of Providers -->
+                <div class="provider-card">
+                    <h5>Dr. Jane Doe</h5>
+                    <p>Cardiologist | New York</p>
+                    <button class="btn btn-primary">Book Appointment</button>
+                </div>
+                <div class="provider-card">
+                    <h5>Dr. John Smith</h5>
+                    <p>Dermatologist | Los Angeles</p>
+                    <button class="btn btn-primary">Book Appointment</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Appointment Actions -->
+        <div class="appointment-buttons">
+            <button class="btn btn-primary">Confirm Appointment</button>
+            <button class="btn btn-secondary">Cancel</button>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="appointmentModal" tabindex="-1" aria-labelledby="appointmentModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="appointmentModalLabel">Appointment Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Appointment details content goes here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
