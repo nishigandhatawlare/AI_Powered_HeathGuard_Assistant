@@ -1,85 +1,135 @@
-﻿@{
+﻿@model AppointmentViewModel
+
+@{
     ViewData["Title"] = "Appointment Scheduling";
     Layout = "_Layout";
 }
-<!DOCTYPE html>
-<html lang="en">
-<head>
-</head>
-<body>
-    <div class="container">
-        <!-- Calendar View -->
-        <div class="card calendar-container">
-            <div class="card-header">Schedule Your Appointment</div>
-            <div class="card-body">
-                <div id="calendar"></div>
-            </div>
-        </div>
 
-        <!-- Healthcare Providers -->
-        <div class="card provider-list">
-            <div class="card-header">Healthcare Providers</div>
-            <div class="card-body">
-                <div class="filter-group mb-3">
-                    <select class="form-select" aria-label="Select Specialty">
-                        <option selected>Select Specialty</option>
-                        <option value="1">Cardiology</option>
-                        <option value="2">Dermatology</option>
-                        <option value="3">Neurology</option>
-                    </select>
-                </div>
-                <div class="filter-group mb-3">
-                    <select class="form-select" aria-label="Select Location">
-                        <option selected>Select Location</option>
-                        <option value="1">New York</option>
-                        <option value="2">Los Angeles</option>
-                        <option value="3">Chicago</option>
-                    </select>
-                </div>
-                <div class="filter-group mb-3">
-                    <select class="form-select" aria-label="Select Availability">
-                        <option selected>Select Availability</option>
-                        <option value="1">Available Today</option>
-                        <option value="2">Available This Week</option>
-                        <option value="3">Available This Month</option>
-                    </select>
-                </div>
-
-                <!-- List of Providers -->
-                <div class="provider-card">
-                    <h5>Dr. Jane Doe</h5>
-                    <p>Cardiologist | New York</p>
-                    <button class="btn btn-primary">Book Appointment</button>
-                </div>
-                <div class="provider-card">
-                    <h5>Dr. John Smith</h5>
-                    <p>Dermatologist | Los Angeles</p>
-                    <button class="btn btn-primary">Book Appointment</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Appointment Actions -->
-        <div class="appointment-buttons">
-            <button class="btn btn-primary">Confirm Appointment</button>
-            <button class="btn btn-secondary">Cancel</button>
+<div class="container">
+    <!-- Calendar View -->
+    <div class="card calendar-container">
+        <div class="card-header">Schedule Your Appointment</div>
+        <div class="card-body">
+            <div id="calendar"></div>
         </div>
     </div>
 
-    <!-- Modal -->
-    <div class="modal fade" id="appointmentModal" tabindex="-1" aria-labelledby="appointmentModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="appointmentModalLabel">Appointment Details</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <!-- Appointment details content goes here -->
-                </div>
+    <!-- Healthcare Providers -->
+    <div class="card provider-list">
+        <div class="card-header">Healthcare Providers</div>
+        <div class="card-body">
+            <!-- Filters -->
+            <div class="filter-group mb-3">
+                <select class="form-select" aria-label="Select Specialty" id="specialtyFilter">
+                    <option selected>Select Specialty</option>
+                    @foreach (var specialty in Model.Specialties)
+                    {
+                        <option value="@specialty.SpecialtyId">@specialty.Name</option>
+                    }
+                </select>
+            </div>
+            <div class="filter-group mb-3">
+                <select class="form-select" aria-label="Select Location" id="locationFilter">
+                    <option selected>Select Location</option>
+                    @foreach (var location in Model.Locations)
+                    {
+                        <option value="@location.LocationId">@location.Name</option>
+                    }
+                </select>
+            </div>
+            <div class="filter-group mb-3">
+                <select class="form-select" aria-label="Select Availability" id="availabilityFilter">
+                    <option selected>Select Availability</option>
+                    <option value="1">Available Today</option>
+                    <option value="2">Available This Week</option>
+                    <option value="3">Available This Month</option>
+                </select>
+            </div>
+
+            <!-- List of Providers -->
+            <div id="providerList">
+                @foreach (var provider in Model.Providers)
+                {
+                    <div class="provider-card">
+                        <h5>@provider.Name</h5>
+                        <p>@provider.SpecialtyName | @provider.LocationName</p>
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#appointmentModal"
+                                data-provider-id="@provider.ProviderId"
+                                data-provider-name="@provider.Name">
+                            Book Appointment
+                        </button>
+                    </div>
+                }
             </div>
         </div>
     </div>
+</div>
 
-</body>
-</html>
+<!-- Modal for booking an appointment -->
+<div class="modal fade" id="appointmentModal" tabindex="-1" aria-labelledby="appointmentModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="appointmentModalLabel">Appointment Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="post" asp-action="Book">
+                    <input type="hidden" name="ProviderId" id="modalProviderId" value="" /> <!-- Hidden ProviderId -->
+                    <input type="hidden" name="ProviderName" id="modalProviderName" value="" /> <!-- Hidden ProviderName -->
+
+                    <div class="mb-3">
+                        <label for="appointmentDate" class="form-label">Appointment Date</label>
+                        <input type="date" class="form-control" id="appointmentDate" name="AppointmentDate" required />
+                    </div>
+                    <div class="mb-3">
+                        <label for="patientName" class="form-label">Patient Name</label>
+                        <input asp-validation-for="patientName" type="text" class="form-control" id="patientName" name="PatientName" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="status" class="form-label">Status</label>
+                        <select class="form-select" id="status" name="Status" required>
+                            <option value="" disabled selected>Select Status</option>
+                            <option value="Scheduled">Scheduled</option>
+                            <option value="Completed">Completed</option>
+                            <option value="Cancelled">Cancelled</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Book Appointment</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Get the modal element
+            var appointmentModal = document.getElementById('appointmentModal');
+
+            // Add an event listener for when the modal is shown
+            appointmentModal.addEventListener('show.bs.modal', function (event) {
+                // Get the button that triggered the modal
+                var button = event.relatedTarget;
+
+                // Get the provider ID and provider name from the button's data attributes
+                var providerId = button.getAttribute('data-provider-id');
+                var providerName = button.getAttribute('data-provider-name');
+
+                // Set the provider ID and provider name in the hidden inputs inside the modal
+                var modalProviderId = appointmentModal.querySelector('#modalProviderId');
+                var modalProviderName = appointmentModal.querySelector('#modalProviderName');
+
+                if (modalProviderId && modalProviderName) {
+                    modalProviderId.value = providerId;
+                    modalProviderName.value = providerName;
+                }
+            });
+        });
+    </script>
+
+}

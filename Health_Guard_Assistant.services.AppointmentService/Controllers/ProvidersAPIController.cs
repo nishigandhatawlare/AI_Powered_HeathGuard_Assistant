@@ -22,21 +22,47 @@ namespace Health_Guard_Assistant.services.AppointmentService.Controllers
             _mapper = mapper;
         }
         // GET: api/providers
+        //[HttpGet]
+        //public ResponseDto GetProviders()
+        //{
+        //    try
+        //    {
+        //        IEnumerable<HealthcareProvider> providers = _db.HealthcareProviders.ToList();
+        //        _responce.Result = _mapper.Map<IEnumerable<HealthcareProviderDto>>(providers);
+        //        _responce.IsSuccess = true;
+        //        _responce.Message = "providers retrieved successfully.";
+        //    }
+        //    catch(Exception ex) 
+        //    {
+        //        _responce.IsSuccess = false;
+        //        _responce.Message = ex.Message;
+        //    }
+        //    return _responce;
+        //}
         [HttpGet]
         public ResponseDto GetProviders()
         {
             try
             {
-                IEnumerable<HealthcareProvider> providers = _db.HealthcareProviders.ToList();
-                _responce.Result = _mapper.Map<IEnumerable<HealthcareProviderDto>>(providers);
+                // Include the Specialty and Location entities for eager loading
+                IEnumerable<HealthcareProvider> providers = _db.HealthcareProviders
+                    .Include(p => p.Specialty)
+                    .Include(p => p.Location)
+                    .ToList();
+
+                // Use AutoMapper to map providers to HealthcareProviderDto
+                var providerDtos = _mapper.Map<IEnumerable<HealthcareProviderDto>>(providers);
+
+                _responce.Result = providerDtos;
                 _responce.IsSuccess = true;
-                _responce.Message = "providers retrieved successfully.";
+                _responce.Message = "Providers retrieved successfully.";
             }
-            catch(Exception ex) 
+            catch (Exception ex)
             {
                 _responce.IsSuccess = false;
                 _responce.Message = ex.Message;
             }
+
             return _responce;
         }
 

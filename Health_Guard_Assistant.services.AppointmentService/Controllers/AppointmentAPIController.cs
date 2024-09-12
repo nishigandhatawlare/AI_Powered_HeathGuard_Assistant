@@ -67,18 +67,23 @@ namespace Health_Guard_Assistant.services.AppointmentService.Controllers
                 if (appointmentdto == null)
                 {
                     _response.IsSuccess = false;
-                    _response.Message = "Invalid provider data.";
+                    _response.Message = "Invalid appointment data.";
                     return _response;
                 }
-                //map appointmentdto to appointments then add to db
-                Appointment appontments = _mapper.Map<Appointment>(appointmentdto);
-                //add new providers to the database
-                _db.Appointments.Add(appontments);
-                _db.SaveChanges();
+
+                // Map appointmentdto to the Appointment entity and add to db
+                Appointment appointment = _mapper.Map<Appointment>(appointmentdto);
+
+                // Add the new appointment to the database
+                _db.Appointments.Add(appointment);
+                _db.SaveChanges(); // After this, the appointment.Id will be populated
+
+                // Return the appointment DTO with the generated ID
+                appointmentdto.AppointmentId = appointment.AppointmentId; // Assuming appointmentdto has an Id property
+
                 _response.Result = appointmentdto;
                 _response.IsSuccess = true;
-                _response.Message = "Appointments created successfully.";
-
+                _response.Message = "Appointment created successfully.";
             }
             catch (Exception ex)
             {
