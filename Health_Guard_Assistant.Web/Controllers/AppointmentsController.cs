@@ -119,36 +119,9 @@ namespace Health_Guard_Assistant.Web.Controllers
             return RedirectToAction("Schedule");
         }
 
+
+
         // GET: Appointments/Confirmation
-        public async Task<IActionResult> Confirmation(int appointmentId)
-        {
-            if (appointmentId <= 0)
-            {
-                Log.Warning("Invalid appointment ID {AppointmentId} provided for confirmation.", appointmentId);
-                return RedirectToAction("Schedule");
-            }
-
-            try
-            {
-                var appointmentDetails = await _appointmentsService.GetAppointmentAsyncById(appointmentId);
-
-                if (appointmentDetails == null)
-                {
-                    ViewBag.ErrorMessage = "Appointment not found.";
-                    Log.Warning("Appointment with ID {AppointmentId} not found.", appointmentId);
-                    return RedirectToAction("Schedule");
-                }
-
-                Log.Information("Successfully retrieved appointment details for ID {AppointmentId}", appointmentId);
-                return View(appointmentDetails);
-            }
-            catch (Exception ex)
-            {
-                Log.Error(ex, "An error occurred while retrieving appointment details for ID {AppointmentId}.", appointmentId);
-                ViewBag.ErrorMessage = $"An error occurred while retrieving appointment details: {ex.Message}";
-                return RedirectToAction("Schedule");
-            }
-        }
 
         // Helper method to deserialize response
         private T DeserializeResponse<T>(object result)
@@ -167,7 +140,7 @@ namespace Health_Guard_Assistant.Web.Controllers
                 return default;
             }
         }
-
+        
         // Helper method to extract appointmentId
         private int? ExtractAppointmentId(object result)
         {
@@ -186,5 +159,67 @@ namespace Health_Guard_Assistant.Web.Controllers
                 return null;
             }
         }
+
+        // POST: Appointments/Update
+        [HttpPost]
+        public async Task<IActionResult> Update(AppointmentDto appointmentDto)
+        {
+            if (!ModelState.IsValid)
+            {
+                // Invalid model state - return error message or reload the modal
+                TempData["ErrorMessage"] = "Invalid data. Please review the form.";
+                return RedirectToAction("Schedule"); // Or you can use Partial Views to update just the modal.
+            }
+
+            try
+            {
+                var response = await _appointmentsService.UpdateAppointmentAsync(appointmentDto.AppointmentId, appointmentDto);
+
+                if (response != null && response.IsSuccess)
+                {
+                    TempData["SuccessMessage"] = "Successfully updated appointment.";
+                    return RedirectToAction("Schedule");
+                }
+                else
+                {
+                    TempData["ErrorMessage"] = "Failed to update the appointment. Please try again.";
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "An error occurred while updating appointment.");
+                TempData["ErrorMessage"] = "An error occurred while updating appointment.";
+            }
+
+            return RedirectToAction("Schedule");
+        }
+
+        // POST: Appointments/Cancel
+        [HttpPost]
+        public async Task<IActionResult> Cancel(int appointmentId)
+        {
+            try
+            {
+                var response = await _appointmentsService.DeleteAppointmentAsync(appointmentId);
+
+                if (response != null && response.IsSuccess)
+                {
+                    TempData["SuccessMessage"] = "Successfully canceled appointment.";
+                    return RedirectToAction("Schedule");
+                }
+                else
+                {
+                    TempData["ErrorMessage"] = "Failed to cancel the appointment. Please try again.";
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "An error occurred while canceling appointment.");
+                TempData["ErrorMessage"] = $"An error occurred: {ex.Message}";
+            }
+
+            return RedirectToAction("Schedule");
+        }
+
     }
 }
