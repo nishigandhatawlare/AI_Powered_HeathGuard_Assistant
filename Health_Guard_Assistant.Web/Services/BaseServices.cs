@@ -4,18 +4,23 @@ using static Health_Guard_Assistant.Web.Utility.SD;
 using System.Net;
 using System.Text;
 using Newtonsoft.Json;
+using Serilog;
 
 namespace Health_Guard_Assistant.Web.Services
 {
     public class BaseServices : IBaseService
     {
         private readonly IHttpClientFactory _httpClientFactory;
+
         public BaseServices(IHttpClientFactory httpClientFactory)
         {
-            _httpClientFactory = httpClientFactory;
+            _httpClientFactory = httpClientFactory ?? throw new ArgumentNullException(nameof(httpClientFactory));
         }
+
         public async Task<ResponseDto?> SendAsync(RequestDto requestDto)
         {
+            Log.Information("Sending request to URL: {Url} with method: {Method}", requestDto.Url, requestDto.ApiType);
+
             try
             {
                 // Create the HttpClient using the factory
@@ -31,49 +36,47 @@ namespace Health_Guard_Assistant.Web.Services
                 // Add request body content if available
                 if (requestDto.Data != null)
                 {
-                    message.Content = new StringContent(JsonConvert.SerializeObject(requestDto.Data), Encoding.UTF8, "application/json");
+                    var jsonData = JsonConvert.SerializeObject(requestDto.Data);
+                    message.Content = new StringContent(jsonData, Encoding.UTF8, "application/json");
+                    Log.Debug("Request body: {RequestBody}", jsonData);
                 }
 
                 // Set the HTTP method based on the ApiType
-                switch (requestDto.ApiType)
+                message.Method = requestDto.ApiType switch
                 {
-                    case ApiType.Post:
-                        message.Method = HttpMethod.Post;
-                        break;
-                    case ApiType.Delete:
-                        message.Method = HttpMethod.Delete;
-                        break;
-                    case ApiType.Put:
-                        message.Method = HttpMethod.Put;
-                        break;
-                    default:
-                        message.Method = HttpMethod.Get;
-                        break;
-                }
+                    ApiType.Post => HttpMethod.Post,
+                    ApiType.Delete => HttpMethod.Delete,
+                    ApiType.Put => HttpMethod.Put,
+                    _ => HttpMethod.Get
+                };
 
                 // Send the HTTP request
                 HttpResponseMessage? apiResponse = await client.SendAsync(message);
+                Log.Information("Received response with status code: {StatusCode}", apiResponse.StatusCode);
 
                 // Handle different HTTP status codes
                 switch (apiResponse.StatusCode)
                 {
                     case HttpStatusCode.NotFound:
+                        Log.Warning("Not Found: {Url}", requestDto.Url);
                         return new ResponseDto { IsSuccess = false, Message = "Not Found" };
                     case HttpStatusCode.Forbidden:
+                        Log.Warning("Access Denied: {Url}", requestDto.Url);
                         return new ResponseDto { IsSuccess = false, Message = "Access Denied" };
                     case HttpStatusCode.Unauthorized:
+                        Log.Warning("Unauthorized: {Url}", requestDto.Url);
                         return new ResponseDto { IsSuccess = false, Message = "Unauthorized" };
                     case HttpStatusCode.InternalServerError:
+                        Log.Error("Internal Server Error: {Url}", requestDto.Url);
                         return new ResponseDto { IsSuccess = false, Message = "Internal Server Error" };
                     default:
-                        // If status code indicates success
                         if (apiResponse.IsSuccessStatusCode)
                         {
-                            // Read and deserialize the response content
                             var apiContent = await apiResponse.Content.ReadAsStringAsync();
+                            Log.Debug("Response content: {ApiContent}", apiContent);
+
                             var apiResponseDto = JsonConvert.DeserializeObject<ResponseDto>(apiContent);
 
-                            // Set the success flag and message if deserialization succeeds
                             if (apiResponseDto != null)
                             {
                                 apiResponseDto.IsSuccess = true;
@@ -82,19 +85,20 @@ namespace Health_Guard_Assistant.Web.Services
                             }
                             else
                             {
+                                Log.Error("Failed to deserialize response content.");
                                 return new ResponseDto { IsSuccess = false, Message = "Failed to deserialize response" };
                             }
                         }
                         else
                         {
-                            // If not successful, handle unexpected statuses
+                            Log.Warning("Unexpected status code: {StatusCode}", apiResponse.StatusCode);
                             return new ResponseDto { IsSuccess = false, Message = "Unexpected status code: " + apiResponse.StatusCode };
                         }
                 }
             }
             catch (Exception ex)
             {
-                // Catch and return error response
+                Log.Error(ex, "An error occurred while sending the request to {Url}", requestDto.Url);
                 return new ResponseDto
                 {
                     Message = ex.Message.ToString(),

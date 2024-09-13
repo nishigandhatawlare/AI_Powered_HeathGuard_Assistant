@@ -2,6 +2,7 @@
 using Health_Guard_Assistant.Web.Services.IServices;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using Serilog;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -17,10 +18,10 @@ namespace Health_Guard_Assistant.Web.Controllers
         public AppointmentsController(IAppointmentService appointmentService, ISpecialityService specialityService,
             ILocationService locationService, IProviderService providerService)
         {
-            _appointmentsService = appointmentService;
-            _specialityService = specialityService;
-            _locationService = locationService;
-            _providerService = providerService;
+            _appointmentsService = appointmentService ?? throw new ArgumentNullException(nameof(appointmentService));
+            _specialityService = specialityService ?? throw new ArgumentNullException(nameof(specialityService));
+            _locationService = locationService ?? throw new ArgumentNullException(nameof(locationService));
+            _providerService = providerService ?? throw new ArgumentNullException(nameof(providerService));
         }
 
         // GET: Appointments/Schedule
@@ -34,34 +35,39 @@ namespace Health_Guard_Assistant.Web.Controllers
                 if (appointmentResponse != null && appointmentResponse.IsSuccess)
                 {
                     viewModel.Appointments = DeserializeResponse<List<AppointmentDto>>(appointmentResponse.Result);
+                    Log.Information("Successfully retrieved appointments.");
                 }
                 else
                 {
                     // Handle unsuccessful response
                     ViewBag.ErrorMessage = "Failed to load appointments.";
+                    Log.Warning("Failed to load appointments: {Response}", appointmentResponse?.Message);
                 }
 
                 var specialtyResponse = await _specialityService.GetSpecialityAsync();
                 if (specialtyResponse != null && specialtyResponse.IsSuccess)
                 {
                     viewModel.Specialties = DeserializeResponse<List<SpecialtyDto>>(specialtyResponse.Result);
+                    Log.Information("Successfully retrieved specialties.");
                 }
 
                 var locationResponse = await _locationService.GetLocationsAsync();
                 if (locationResponse != null && locationResponse.IsSuccess)
                 {
                     viewModel.Locations = DeserializeResponse<List<LocationDto>>(locationResponse.Result);
+                    Log.Information("Successfully retrieved locations.");
                 }
 
                 var providersResponse = await _providerService.GetProviderAsync();
                 if (providersResponse != null && providersResponse.IsSuccess)
                 {
                     viewModel.Providers = DeserializeResponse<List<HealthcareProviderDto>>(providersResponse.Result);
+                    Log.Information("Successfully retrieved providers.");
                 }
             }
             catch (Exception ex)
             {
-                // Log the exception
+                Log.Error(ex, "An error occurred while loading data for appointments schedule.");
                 ViewBag.ErrorMessage = $"An error occurred while loading data: {ex.Message}";
             }
 
@@ -75,6 +81,7 @@ namespace Health_Guard_Assistant.Web.Controllers
             if (!ModelState.IsValid)
             {
                 ViewBag.ErrorMessage = "Invalid data. Please review the form.";
+                Log.Warning("Invalid appointment data received.");
                 return RedirectToAction("Schedule");
             }
 
@@ -88,21 +95,24 @@ namespace Health_Guard_Assistant.Web.Controllers
 
                     if (appointmentId.HasValue)
                     {
+                        Log.Information("Successfully booked appointment with ID {AppointmentId}", appointmentId.Value);
                         return RedirectToAction("Schedule", new { appointmentId });
                     }
                     else
                     {
                         ViewBag.ErrorMessage = "Failed to book the appointment. Please try again.";
+                        Log.Warning("Failed to extract appointment ID from response.");
                     }
                 }
                 else
                 {
                     ViewBag.ErrorMessage = "Failed to book the appointment. Please try again.";
+                    Log.Warning("Appointment booking failed: {Response}", response?.Message);
                 }
             }
             catch (Exception ex)
             {
-                // Log the exception
+                Log.Error(ex, "An error occurred while booking the appointment.");
                 ViewBag.ErrorMessage = $"An error occurred while booking the appointment: {ex.Message}";
             }
 
@@ -114,6 +124,7 @@ namespace Health_Guard_Assistant.Web.Controllers
         {
             if (appointmentId <= 0)
             {
+                Log.Warning("Invalid appointment ID {AppointmentId} provided for confirmation.", appointmentId);
                 return RedirectToAction("Schedule");
             }
 
@@ -124,14 +135,16 @@ namespace Health_Guard_Assistant.Web.Controllers
                 if (appointmentDetails == null)
                 {
                     ViewBag.ErrorMessage = "Appointment not found.";
+                    Log.Warning("Appointment with ID {AppointmentId} not found.", appointmentId);
                     return RedirectToAction("Schedule");
                 }
 
+                Log.Information("Successfully retrieved appointment details for ID {AppointmentId}", appointmentId);
                 return View(appointmentDetails);
             }
             catch (Exception ex)
             {
-                // Log the exception
+                Log.Error(ex, "An error occurred while retrieving appointment details for ID {AppointmentId}.", appointmentId);
                 ViewBag.ErrorMessage = $"An error occurred while retrieving appointment details: {ex.Message}";
                 return RedirectToAction("Schedule");
             }
@@ -149,7 +162,7 @@ namespace Health_Guard_Assistant.Web.Controllers
             }
             catch (JsonSerializationException ex)
             {
-                // Log the exception
+                Log.Error(ex, "An error occurred while deserializing response.");
                 ViewBag.ErrorMessage = $"An error occurred while deserializing response: {ex.Message}";
                 return default;
             }
@@ -168,7 +181,7 @@ namespace Health_Guard_Assistant.Web.Controllers
             }
             catch (JsonSerializationException ex)
             {
-                // Log the exception
+                Log.Error(ex, "An error occurred while extracting appointment ID.");
                 ViewBag.ErrorMessage = $"An error occurred while extracting appointment ID: {ex.Message}";
                 return null;
             }
