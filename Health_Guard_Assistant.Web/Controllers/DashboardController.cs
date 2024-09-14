@@ -6,6 +6,7 @@ namespace Health_Guard_Assistant.Web.Controllers
     {
         public IActionResult Index()
         {
+            ViewData["ActivePage"] = "Dashboard";
             return View();
         }
     }

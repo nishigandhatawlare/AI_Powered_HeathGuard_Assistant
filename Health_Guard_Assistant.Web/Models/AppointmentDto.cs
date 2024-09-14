@@ -6,12 +6,12 @@ namespace Health_Guard_Assistant.Web.Models
     {
         public int AppointmentId { get; set; }
 
-        [Required]
+        
         public int ProviderId { get; set; }
 
-        [Required]
+        
         [StringLength(100)]
-        public string ProviderName { get; set; }
+        public string? ProviderName { get; set; }  // Nullable ProviderName
 
         [Required]
         [StringLength(100)]

@@ -94,7 +94,7 @@ namespace Health_Guard_Assistant.services.AppointmentService.Controllers
         }
 
         // PUT: api/appointments/{id}
-        [HttpPut("{id:int}")]
+        [HttpPut("{id}")]
         public ResponseDto UpdateAppointment(int id, [FromBody] AppointmentDto appointmentdto)
         {
             try

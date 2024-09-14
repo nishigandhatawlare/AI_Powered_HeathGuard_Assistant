@@ -19,17 +19,19 @@
         <div class="card-header">Healthcare Providers</div>
         <div class="card-body">
             <!-- List of Providers -->
-            <div id="providerList">
+            <div class="row" id="providerList">
                 @foreach (var provider in Model.Providers)
                 {
-                    <div class="provider-card mb-3 p-3 border rounded">
-                        <h5>@provider.Name</h5>
-                        <p>@provider.SpecialtyName | @provider.LocationName</p>
-                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#appointmentModal"
-                                data-provider-id="@provider.ProviderId"
-                                data-provider-name="@provider.Name">
-                            Book Appointment
-                        </button>
+                    <div class="col-md-4 mb-4">
+                        <div class="provider-card p-3 border rounded">
+                            <h5>@provider.Name</h5>
+                            <p>@provider.SpecialtyName | @provider.LocationName</p>
+                            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#appointmentModal"
+                                    data-provider-id="@provider.ProviderId"
+                                    data-provider-name="@provider.Name">
+                                Book Appointment
+                            </button>
+                        </div>
                     </div>
                 }
             </div>
@@ -47,6 +49,7 @@
                         <tr>
                             <th>Date</th>
                             <th>Provider</th>
+                            <th>Patient Name</th>
                             <th>Status</th>
                             <th>Actions</th>
                         </tr>
@@ -70,11 +73,13 @@
                                         <p>Provider not found</p>
                                     }
                                 </td>
+                                <td>@appointment.PatientName</td>
                                 <td>@appointment.Status</td>
                                 <td>
                                     <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#updateAppointmentModal"
                                             data-appointment-id="@appointment.AppointmentId"
                                             data-appointment-date="@appointment.AppointmentDate.ToString("yyyy-MM-dd")"
+                                            data-provider-id="@appointment.ProviderId"
                                             data-provider-name="@provider?.Name"
                                             data-status="@appointment.Status">
                                         Update
@@ -147,7 +152,7 @@
             <div class="modal-body">
                 <form method="post" asp-action="Update">
                     <input type="hidden" name="AppointmentId" id="updateAppointmentId" value="" /> <!-- Hidden AppointmentId -->
-
+                    <input type="hidden" name="ProviderId" id="updateProviderId" value="" /> <!-- Hidden AppointmentId -->
                     <div class="mb-3">
                         <label for="patientName" class="form-label">Patient Name</label>
                         <input asp-validation-for="patientName" type="text" class="form-control" id="patientName" name="PatientName" />
@@ -197,25 +202,49 @@
     <partial name="_ValidationScriptsPartial" />
     <script>
         document.addEventListener('DOMContentLoaded', function () {
+            // Get the modal element
+            var appointmentModal = document.getElementById('appointmentModal');
+            // Add an event listener for when the modal is shown
+            appointmentModal.addEventListener('show.bs.modal', function (event) {
+                // Get the button that triggered the modal
+                var button = event.relatedTarget;
+                // Get the provider ID and provider name from the button's data attributes
+                var providerId = button.getAttribute('data-provider-id');
+                var providerName = button.getAttribute('data-provider-name');
+                // Set the provider ID and provider name in the hidden inputs inside the modal
+                var modalProviderId = appointmentModal.querySelector('#modalProviderId');
+                var modalProviderName = appointmentModal.querySelector('#modalProviderName');
+                if (modalProviderId && modalProviderName) {
+                    modalProviderId.value = providerId;
+                    modalProviderName.value = providerName;
+                }
+            });
+        });
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
             var updateModal = document.getElementById('updateAppointmentModal');
             var cancelModal = document.getElementById('cancelAppointmentModal');
 
+            
             // Update Modal
             updateModal.addEventListener('show.bs.modal', function (event) {
-                var button = event.relatedTarget; // Button that triggered the modal
+                var button = event.relatedTarget;
                 var appointmentId = button.getAttribute('data-appointment-id');
+                var providerId = button.getAttribute('data-provider-id');
                 var appointmentDate = button.getAttribute('data-appointment-date');
                 var status = button.getAttribute('data-status');
 
                 var modalAppointmentId = updateModal.querySelector('#updateAppointmentId');
                 var modalAppointmentDate = updateModal.querySelector('#updateAppointmentDate');
                 var modalStatus = updateModal.querySelector('#updateStatus');
+                var modalProviderId = updateModal.querySelector('#updateProviderId');
 
                 modalAppointmentId.value = appointmentId;
                 modalAppointmentDate.value = appointmentDate;
                 modalStatus.value = status;
+                modalProviderId.value = providerId;
             });
-
             // Cancel Modal
             cancelModal.addEventListener('show.bs.modal', function (event) {
                 var button = event.relatedTarget;

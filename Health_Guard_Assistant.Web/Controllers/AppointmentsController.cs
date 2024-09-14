@@ -70,7 +70,7 @@ namespace Health_Guard_Assistant.Web.Controllers
                 Log.Error(ex, "An error occurred while loading data for appointments schedule.");
                 ViewBag.ErrorMessage = $"An error occurred while loading data: {ex.Message}";
             }
-
+            ViewData["ActivePage"] = "Appointments"; 
             return View(viewModel);
         }
 
@@ -159,11 +159,62 @@ namespace Health_Guard_Assistant.Web.Controllers
                 return null;
             }
         }
+        private string? ExtractProviderName(object result)
+        {
+            if (result == null)
+                return null;
+
+            try
+            {
+                // Convert the result to string and log the raw result
+                var resultString = Convert.ToString(result);
+                Log.Information("Provider API result: " + resultString); // Log the raw result
+
+                // Check if resultString is valid JSON (starts with '{' or '[')
+                if (!string.IsNullOrWhiteSpace(resultString) &&
+                    (resultString.Trim().StartsWith("{") || resultString.Trim().StartsWith("[")))
+                {
+                    // Deserialize the result string into a dynamic object
+                    var response = JsonConvert.DeserializeObject<dynamic>(resultString);
+
+                    // Check if response contains ProviderName
+                    return response?.ProviderName != null ? (string?)response.ProviderName : null;
+                }
+                else
+                {
+                    // Log a warning and inspect the actual result string content
+                    Log.Warning($"Invalid JSON format in result. Actual content: {resultString ?? "null"}");
+
+                    // Optionally, output more details for debugging purposes
+                    Log.Warning($"Result type: {result?.GetType().FullName}");
+
+                    return null;
+                }
+
+            }
+            catch (JsonReaderException ex)
+            {
+                // Log the specific JsonReaderException error and return null
+                Log.Error(ex, "An error occurred while extracting provider name due to invalid JSON.");
+                ViewBag.ErrorMessage = $"An error occurred while extracting provider name: {ex.Message}";
+                return null;
+            }
+            catch (Exception ex)
+            {
+                // Handle any other exceptions and log them
+                Log.Error(ex, "An unexpected error occurred.");
+                return null;
+            }
+        }
+
+
 
         // POST: Appointments/Update
         [HttpPost]
         public async Task<IActionResult> Update(AppointmentDto appointmentDto)
         {
+            ModelState.Remove("ProviderName");
+
             if (!ModelState.IsValid)
             {
                 // Invalid model state - return error message or reload the modal
