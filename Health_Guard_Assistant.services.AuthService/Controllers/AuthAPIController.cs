@@ -17,5 +17,11 @@ namespace Health_Guard_Assistant.services.AuthService.Controllers
         {
             return Ok();
         }
+
+        [HttpPost("forgotpassword")]
+        public async Task<IActionResult> ForgotPassword()
+        {
+            return Ok();
+        }
     }
 }
