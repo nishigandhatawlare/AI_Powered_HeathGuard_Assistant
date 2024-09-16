@@ -21,24 +21,7 @@ namespace Health_Guard_Assistant.services.AppointmentService.Controllers
             _responce = new ResponseDto();
             _mapper = mapper;
         }
-        // GET: api/providers
-        //[HttpGet]
-        //public ResponseDto GetProviders()
-        //{
-        //    try
-        //    {
-        //        IEnumerable<HealthcareProvider> providers = _db.HealthcareProviders.ToList();
-        //        _responce.Result = _mapper.Map<IEnumerable<HealthcareProviderDto>>(providers);
-        //        _responce.IsSuccess = true;
-        //        _responce.Message = "providers retrieved successfully.";
-        //    }
-        //    catch(Exception ex) 
-        //    {
-        //        _responce.IsSuccess = false;
-        //        _responce.Message = ex.Message;
-        //    }
-        //    return _responce;
-        //}
+       
         [HttpGet]
         public ResponseDto GetProviders()
         {

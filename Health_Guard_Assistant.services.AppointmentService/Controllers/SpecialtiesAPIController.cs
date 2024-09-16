@@ -11,7 +11,7 @@ namespace Health_Guard_Assistant.services.AppointmentService.Controllers
     [ApiController]
     public class SpecialtiesAPIController : ControllerBase
     {
-
+        
         private readonly AppDbContext _db;
         private ResponseDto _response;
         private IMapper _mapper;

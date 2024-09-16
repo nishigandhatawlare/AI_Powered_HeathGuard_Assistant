@@ -39,7 +39,6 @@ namespace Health_Guard_Assistant.Web.Controllers
                 }
                 else
                 {
-                    // Handle unsuccessful response
                     ViewBag.ErrorMessage = "Failed to load appointments.";
                     Log.Warning("Failed to load appointments: {Response}", appointmentResponse?.Message);
                 }
@@ -68,11 +67,13 @@ namespace Health_Guard_Assistant.Web.Controllers
             catch (Exception ex)
             {
                 Log.Error(ex, "An error occurred while loading data for appointments schedule.");
-                ViewBag.ErrorMessage = $"An error occurred while loading data: {ex.Message}";
+                TempData["error"] = "An error occurred while loading data: " + ex.Message;
             }
-            ViewData["ActivePage"] = "Appointments"; 
+
+            ViewData["ActivePage"] = "Appointments";
             return View(viewModel);
         }
+
 
         // POST: Appointments/Book
         [HttpPost]
@@ -80,7 +81,7 @@ namespace Health_Guard_Assistant.Web.Controllers
         {
             if (!ModelState.IsValid)
             {
-                ViewBag.ErrorMessage = "Invalid data. Please review the form.";
+                TempData["error"] = "Invalid data. Please review the form.";
                 Log.Warning("Invalid appointment data received.");
                 return RedirectToAction("Schedule");
             }
@@ -92,36 +93,33 @@ namespace Health_Guard_Assistant.Web.Controllers
                 if (response != null && response.IsSuccess)
                 {
                     var appointmentId = ExtractAppointmentId(response.Result);
-
                     if (appointmentId.HasValue)
                     {
+                        TempData["success"] = "Successfully booked appointment with ID " + appointmentId.Value;
                         Log.Information("Successfully booked appointment with ID {AppointmentId}", appointmentId.Value);
                         return RedirectToAction("Schedule", new { appointmentId });
                     }
                     else
                     {
-                        ViewBag.ErrorMessage = "Failed to book the appointment. Please try again.";
+                        TempData["error"] = "Failed to book the appointment. Please try again.";
                         Log.Warning("Failed to extract appointment ID from response.");
                     }
                 }
                 else
                 {
-                    ViewBag.ErrorMessage = "Failed to book the appointment. Please try again.";
+                    TempData["error"] = response?.Message ?? "Failed to book the appointment. Please try again.";
                     Log.Warning("Appointment booking failed: {Response}", response?.Message);
                 }
             }
             catch (Exception ex)
             {
                 Log.Error(ex, "An error occurred while booking the appointment.");
-                ViewBag.ErrorMessage = $"An error occurred while booking the appointment: {ex.Message}";
+                TempData["error"] = "An error occurred while booking the appointment: " + ex.Message;
             }
 
             return RedirectToAction("Schedule");
         }
 
-
-
-        // GET: Appointments/Confirmation
 
         // Helper method to deserialize response
         private T DeserializeResponse<T>(object result)
@@ -217,9 +215,8 @@ namespace Health_Guard_Assistant.Web.Controllers
 
             if (!ModelState.IsValid)
             {
-                // Invalid model state - return error message or reload the modal
-                TempData["ErrorMessage"] = "Invalid data. Please review the form.";
-                return RedirectToAction("Schedule"); // Or you can use Partial Views to update just the modal.
+                TempData["error"] = "Invalid data. Please review the form.";
+                return RedirectToAction("Schedule");
             }
 
             try
@@ -228,18 +225,18 @@ namespace Health_Guard_Assistant.Web.Controllers
 
                 if (response != null && response.IsSuccess)
                 {
-                    TempData["SuccessMessage"] = "Successfully updated appointment.";
+                    TempData["success"] = "Appointment updated successfully.";
                     return RedirectToAction("Schedule");
                 }
                 else
                 {
-                    TempData["ErrorMessage"] = "Failed to update the appointment. Please try again.";
+                    TempData["error"] = "Failed to update the appointment.";
                 }
             }
             catch (Exception ex)
             {
                 Log.Error(ex, "An error occurred while updating appointment.");
-                TempData["ErrorMessage"] = "An error occurred while updating appointment.";
+                TempData["error"] = "An error occurred while updating appointment.";
             }
 
             return RedirectToAction("Schedule");
@@ -255,18 +252,18 @@ namespace Health_Guard_Assistant.Web.Controllers
 
                 if (response != null && response.IsSuccess)
                 {
-                    TempData["SuccessMessage"] = "Successfully canceled appointment.";
+                    TempData["success"] = "Appointment canceled successfully.";
                     return RedirectToAction("Schedule");
                 }
                 else
                 {
-                    TempData["ErrorMessage"] = "Failed to cancel the appointment. Please try again.";
+                    TempData["error"] = "Failed to cancel the appointment.";
                 }
             }
             catch (Exception ex)
             {
                 Log.Error(ex, "An error occurred while canceling appointment.");
-                TempData["ErrorMessage"] = $"An error occurred: {ex.Message}";
+                TempData["error"] = $"An error occurred: {ex.Message}";
             }
 
             return RedirectToAction("Schedule");
