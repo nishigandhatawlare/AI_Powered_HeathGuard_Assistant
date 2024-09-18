@@ -11,11 +11,13 @@ namespace Health_Guard_Assistant.services.AuthService.Service
         private readonly AppDbContext _db;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
-        public AuthService(AppDbContext db, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
+        private readonly IJwtTokenGenerator _jwtTokenGenerator;
+        public AuthService(AppDbContext db, UserManager<ApplicationUser> userManager, IJwtTokenGenerator jwtTokenGenerator, RoleManager<IdentityRole> roleManager)
         {
             _db = db;
             _userManager = userManager;
             _roleManager = roleManager;
+            _jwtTokenGenerator = jwtTokenGenerator;
         }
         public async Task<bool> ForgotPassword(ForgotPasswordDto forgotPasswordDto)
         {
@@ -37,6 +39,9 @@ namespace Health_Guard_Assistant.services.AuthService.Service
                 };
             }
             //if user was found need to generate JWT Token
+            var token = _jwtTokenGenerator.GenerateToken(user);
+
+
             UserDto userDto = new()
             {
                 UserId = user.Id,  // No need to parse; Id remains as string
