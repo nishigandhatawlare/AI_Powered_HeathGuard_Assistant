@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Health_Guard_Assistant.services.AuthService.Models.Dto;
+using Health_Guard_Assistant.services.AuthService.Service.IService;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Health_Guard_Assistant.services.AuthService.Controllers
@@ -7,11 +9,28 @@ namespace Health_Guard_Assistant.services.AuthService.Controllers
     [ApiController]
     public class AuthAPIController : ControllerBase
     {
-        [HttpPost("register")]
-        public async Task<IActionResult> Register() 
+        private readonly IAuthService _authService;
+        protected ResponseDto _response;
+        public AuthAPIController(IAuthService authService)
         {
-            return Ok();
+            _authService = authService;
+            _response = new();
         }
+        [HttpPost("register")]
+        public async Task<IActionResult> Register([FromBody] RegistrationRequestDto registrationRequestDto)
+        {
+            var errorMessage = await _authService.Register(registrationRequestDto);
+            if (!string.IsNullOrEmpty(errorMessage))
+            {
+                _response.IsSuccess = false;
+                _response.Message = errorMessage;
+                return BadRequest(_response);
+            }
+            _response.IsSuccess = true;
+            _response.Message = errorMessage;
+            return Ok(_response);
+        }
+
         [HttpPost("login")]
         public async Task<IActionResult> Login()
         {

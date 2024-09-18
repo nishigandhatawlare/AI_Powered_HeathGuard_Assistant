@@ -4,7 +4,7 @@ namespace Health_Guard_Assistant.services.AuthService.Service.IService
 {
     public interface IAuthService
     {
-        Task<UserDto> Register(RegistrationRequestDto registrationRequestDto);
+        Task<string> Register(RegistrationRequestDto registrationRequestDto);
         Task<LoginResponseDto> Login(LoginRequestDto loginRequestDto);
         // Method for password reset request
         Task<bool> ForgotPassword(ForgotPasswordDto forgotPasswordDto);

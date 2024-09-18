@@ -2,12 +2,10 @@
 {
     public class UserDto
     {
-        public int UserId { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public string Email { get; set; }
-        public string PasswordHash { get; set; }
-        public bool RememberMe { get; set; }
-
+        public string UserId { get; set; }         // User ID
+        public string FirstName { get; set; }   // First Name
+        public string LastName { get; set; }    // Last Name
+        public string Email { get; set; }       // Email Address
+        public bool RememberMe { get; set; }    // Remember Me flag
     }
 }

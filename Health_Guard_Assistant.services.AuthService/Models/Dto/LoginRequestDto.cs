@@ -2,8 +2,8 @@
 {
     public class LoginRequestDto
     {
-        public string Email { get; set; }
-        public string Password { get; set; }
-        public bool RememberMe { get; set; }
+        public string Email { get; set; }       // Maps to "Email Address" input
+        public string Password { get; set; }    // Maps to "Password" input
+        public bool RememberMe { get; set; }    // Maps to "Remember Me" checkbox
     }
 }
