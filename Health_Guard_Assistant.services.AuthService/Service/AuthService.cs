@@ -24,7 +24,33 @@ namespace Health_Guard_Assistant.services.AuthService.Service
 
         public async Task<LoginResponseDto> Login(LoginRequestDto loginRequestDto)
         {
-            throw new NotImplementedException();
+            //retrive the extisting user of requested username
+            var user = _db.ApplicationUsers.FirstOrDefault(u => u.UserName.ToLower() == loginRequestDto.Email.ToLower());
+            //check paswword valid or not
+            bool isValid = await _userManager.CheckPasswordAsync(user, loginRequestDto.Password);
+            if (user == null && isValid == false)
+            {
+                return new LoginResponseDto()
+                {
+                    User = null,
+                    Token = ""
+                };
+            }
+            //if user was found need to generate JWT Token
+            UserDto userDto = new()
+            {
+                UserId = user.Id,  // No need to parse; Id remains as string
+                FirstName = user.Name,
+                LastName = user.LastName,
+                Email = user.Email,
+                RememberMe = false
+            };
+            LoginResponseDto loginResponseDto = new LoginResponseDto()
+            {
+                User = userDto,
+                Token = ""    //will assign toke here after generating
+            };
+            return loginResponseDto;
         }
 
 
