@@ -3,6 +3,7 @@ using Health_Guard_Assistant.services.AuthService.Models;
 using Health_Guard_Assistant.services.AuthService.Models.Dto;
 using Health_Guard_Assistant.services.AuthService.Service.IService;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace Health_Guard_Assistant.services.AuthService.Service
 {
@@ -12,36 +13,72 @@ namespace Health_Guard_Assistant.services.AuthService.Service
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IJwtTokenGenerator _jwtTokenGenerator;
-        public AuthService(AppDbContext db, UserManager<ApplicationUser> userManager, IJwtTokenGenerator jwtTokenGenerator, RoleManager<IdentityRole> roleManager)
+        private readonly IEmailService _emailService; // Add the email service here
+
+        public AuthService(AppDbContext db, UserManager<ApplicationUser> userManager, IJwtTokenGenerator jwtTokenGenerator, RoleManager<IdentityRole> roleManager, IEmailService emailService)
         {
             _db = db;
             _userManager = userManager;
             _roleManager = roleManager;
             _jwtTokenGenerator = jwtTokenGenerator;
+            _emailService = emailService;
         }
         public async Task<bool> ForgotPassword(ForgotPasswordDto forgotPasswordDto)
         {
-            throw new NotImplementedException();
+            // Retrieve the user based on the email provided
+            var user = await _userManager.FindByEmailAsync(forgotPasswordDto.Email);
+
+            // Check if the user exists
+            if (user == null)
+            {
+                // Return false if the user does not exist to avoid exposing information
+                return false;
+            }
+
+            // Generate a password reset token
+            var resetToken = await _userManager.GeneratePasswordResetTokenAsync(user);
+
+            // Create the reset link (assumed you have a client-side URL to reset the password)
+            var resetLink = $"https://localhost:7252/resetpassword?token={Uri.EscapeDataString(resetToken)}&email={Uri.EscapeDataString(user.Email)}";
+
+            // Send the reset link via email (implement this method in your email service)
+            var emailSent = await _emailService.SendPasswordResetEmail(user.Email, resetLink);
+
+            // Return whether the email was successfully sent
+            return emailSent;
         }
 
         public async Task<LoginResponseDto> Login(LoginRequestDto loginRequestDto)
         {
-            //retrive the extisting user of requested username
-            var user = _db.ApplicationUsers.FirstOrDefault(u => u.UserName.ToLower() == loginRequestDto.Email.ToLower());
-            //check paswword valid or not
-            bool isValid = await _userManager.CheckPasswordAsync(user, loginRequestDto.Password);
-            if (user == null && isValid == false)
+            // Retrieve the existing user with the requested username
+            var user = await _db.ApplicationUsers
+                .FirstOrDefaultAsync(u => u.UserName.ToLower() == loginRequestDto.Email.ToLower());
+
+            // Check if the user was found
+            if (user == null)
             {
-                return new LoginResponseDto()
+                return new LoginResponseDto
                 {
                     User = null,
-                    Token = ""
+                    Token = "" // User not found
                 };
             }
-            //if user was found need to generate JWT Token
+
+            // Check if the password is valid
+            bool isValid = await _userManager.CheckPasswordAsync(user, loginRequestDto.Password);
+            if (!isValid)
+            {
+                return new LoginResponseDto
+                {
+                    User = null,
+                    Token = "" // Invalid password
+                };
+            }
+
+            // If user was found and password is valid, generate JWT Token
             var token = _jwtTokenGenerator.GenerateToken(user);
 
-
+            // Create a UserDto with necessary user information
             UserDto userDto = new()
             {
                 UserId = user.Id,  // No need to parse; Id remains as string
@@ -50,12 +87,13 @@ namespace Health_Guard_Assistant.services.AuthService.Service
                 Email = user.Email,
                 RememberMe = false
             };
-            LoginResponseDto loginResponseDto = new LoginResponseDto()
+
+            // Create and return LoginResponseDto
+            return new LoginResponseDto
             {
                 User = userDto,
-                Token = ""    //will assign toke here after generating
+                Token = token // Assign the generated token here
             };
-            return loginResponseDto;
         }
 
 
@@ -110,9 +148,39 @@ namespace Health_Guard_Assistant.services.AuthService.Service
             return "Error Occured";
         }
 
-        public Task<bool> ResetPassword(ResetPasswordDto resetPasswordDto)
+        public async Task<bool> ResetPassword(ResetPasswordDto resetPasswordDto)
         {
-            throw new NotImplementedException();
+            // Retrieve the user by email
+            var user = await _userManager.FindByEmailAsync(resetPasswordDto.Email);
+            if (user == null)
+            {
+                return false; // User not found
+            }
+
+            // Validate new password and confirmation
+            if (resetPasswordDto.Password != resetPasswordDto.ConfirmPassword)
+            {
+                throw new ArgumentException("Passwords do not match.");
+            }
+
+            // Implement your password policy checks here
+            if (!IsValidPassword(resetPasswordDto.Password))
+            {
+                throw new ArgumentException("Password does not meet security standards.");
+            }
+
+            // Reset the password using the token provided
+            var resetResult = await _userManager.ResetPasswordAsync(user, resetPasswordDto.Token, resetPasswordDto.Password);
+            return resetResult.Succeeded;
         }
+
+        private bool IsValidPassword(string password)
+        {
+            // Add your password validation logic (length, complexity, etc.)
+            if (password.Length < 8) return false; // Example: Minimum length check
+            // Add more checks as necessary
+            return true;
+        }
+
     }
 }
