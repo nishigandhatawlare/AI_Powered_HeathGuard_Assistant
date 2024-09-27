@@ -106,5 +106,19 @@ namespace Health_Guard_Assistant.services.AuthService.Controllers
             _response.Message = "Password has been reset successfully.";
             return Ok(_response);
         }
+
+        [HttpPost("assignRole")]
+        public async Task<IActionResult> AssignRole([FromBody] RegistrationRequestDto model)
+        {
+            var assignRoleSuccessfull = await _authService.AssignRole(model.Email, model.Role.ToUpper());
+            if (!assignRoleSuccessfull)
+            {
+                _response.IsSuccess = false;
+                _response.Message = "Error Encountered!";
+                return BadRequest(_response);
+            }
+            _response.IsSuccess = true;
+            return Ok(_response);
+        }
     }
 }

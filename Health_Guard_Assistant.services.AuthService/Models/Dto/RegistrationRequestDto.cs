@@ -8,6 +8,7 @@
         public string PhoneNumber { get; set; } // (Optional) Not in your form, but can be retained
         public string Password { get; set; }    // Maps to "Password" input
         public string ConfirmPassword { get; set; } // Maps to "Repeat Password" input
+        public string? Role { get; set; }
 
     }
 }

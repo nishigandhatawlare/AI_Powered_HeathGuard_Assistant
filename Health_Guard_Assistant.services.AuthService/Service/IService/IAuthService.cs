@@ -11,5 +11,7 @@ namespace Health_Guard_Assistant.services.AuthService.Service.IService
 
         // Method for resetting the password
         Task<bool> ResetPassword(ResetPasswordDto resetPasswordDto);
+        Task<bool> AssignRole(string email, string roleName);
+
     }
 }
