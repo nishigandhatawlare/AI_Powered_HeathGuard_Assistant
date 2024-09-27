@@ -46,8 +46,15 @@
                 </nav>
 
                 <a class="cta-btn d-none d-sm-block" asp-controller="Consultations" asp-action="Index">Book a Consultation</a>
-                <a class="cta-btn d-none d-sm-block" asp-controller="Account" asp-action="Register">Sign Up</a>
-                <a class="cta-btn d-none d-sm-block" asp-controller="Account" asp-action="Login">Log In</a>
+                @if (!User.Identity.IsAuthenticated)
+                {
+                    <a class="cta-btn d-none d-sm-block" asp-controller="Account" asp-action="Register">Sign Up</a>
+                    <a class="cta-btn d-none d-sm-block" asp-controller="Account" asp-action="Login">Log In</a>
+                }
+                else
+                {
+                    <a class="cta-btn d-none d-sm-block" asp-controller="Account" asp-action="Logout">Logout</a>
+                }
 
 
 
