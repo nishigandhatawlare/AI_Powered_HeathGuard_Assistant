@@ -190,7 +190,8 @@ namespace Health_Guard_Assistant.Web.Controllers
                 return RedirectToAction("Error", "Home");
             }
         }
-
+        // Forgot Password Get Action
+        [HttpGet]
         public IActionResult ForgotPassword()
         {
             try
@@ -204,30 +205,82 @@ namespace Health_Guard_Assistant.Web.Controllers
                 return RedirectToAction("Error", "Home");
             }
         }
+        //Forgot password post action
+        public async Task<IActionResult> ForgotPassword(ForgotPasswordDto forgotPasswordDto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(forgotPasswordDto);
+            }
+            try
+            {
+                var response = await _authService.ForgotPassword(forgotPasswordDto);
+                if (response == null && !response.IsSuccess)
+                {
+                    TempData["error"] = response?.Message ?? "An error occurred while sending the reset password email.";
+                    return View(forgotPasswordDto);
+                }
+                TempData["success"] = "Reset password email sent successfully!";
+                return RedirectToAction(nameof(Login));
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error occurred during Forgot Password.");
+                TempData["error"] = "An error occurred while processing the forgot password request.";
+                return View(forgotPasswordDto);
+            }
+        }
+        //reset password get action
+        [HttpGet("resetpassword")]
+        public IActionResult ResetPassword(string token, string email)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(token) || string.IsNullOrEmpty(email))
+                {
+                    return NotFound(); // Token or email is missing
+                }
 
-        //[HttpGet("resetpassword")]
-        //public IActionResult ResetPassword(string token, string email)
-        //{
-        //    try
-        //    {
-        //        if (string.IsNullOrEmpty(token) || string.IsNullOrEmpty(email))
-        //        {
-        //            Log.Warning("Invalid reset password request. Token or email is missing.");
-        //            return NotFound(); // Return 404 if token or email is missing
-        //        }
+                var model = new ResetPasswordDto { Token = token, Email = email };
+                return View(model);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error occurred while loading the Reset Password view.");
+                TempData["error"] = "An error occurred while loading the reset password page.";
+                return RedirectToAction("Error", "Home");
+            }
 
-        //        Log.Information("Reset password request for email {Email} with token {Token}.", email, token);
-        //        // You can add logic to validate the token and email
-        //        // return View(new ResetPasswordViewModel { Token = token, Email = email });
+        }
 
-        //        return View(new ResetPasswordViewModel { Token = token, Email = email });
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Log.Error(ex, "Error occurred during ResetPassword.");
-        //        TempData["error"] = "An error occurred while processing the reset password request.";
-        //        return RedirectToAction("Error", "Home");
-        //    }
-        //}
+        // Reset Password Post Action
+        [HttpPost("resetpassword")]
+        public async Task<IActionResult> ResetPassword(ResetPasswordDto resetPasswordDto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(resetPasswordDto);
+            }
+
+            try
+            {
+                var response = await _authService.ResetPassword(resetPasswordDto);
+                if (response == null || !response.IsSuccess)
+                {
+                    TempData["error"] = response?.Message ?? "An error occurred while resetting the password.";
+                    return View(resetPasswordDto);
+                }
+
+                TempData["success"] = "Password reset successfully!";
+                return RedirectToAction(nameof(Login));
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error occurred during Reset Password.");
+                TempData["error"] = "An error occurred while processing the reset password request.";
+                return View(resetPasswordDto);
+            }
+        }
+
     }
 }
