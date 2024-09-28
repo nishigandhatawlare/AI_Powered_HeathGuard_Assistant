@@ -1,9 +1,19 @@
 using Health_Guard_Assistant.Web.Services;
 using Health_Guard_Assistant.Web.Services.IServices;
 using Health_Guard_Assistant.Web.Utility;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Serilog;
 using Serilog.Events;
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.LoginPath = "/Account/Login";
+        options.ExpireTimeSpan = TimeSpan.FromMinutes(60); // Default expiration
+        options.SlidingExpiration = true; // Cookie will be refreshed if nearing expiration
+    });
+builder.Services.AddAuthorization();
 
 // Setup Serilog with multiple sinks (File, Console, and Seq for cloud logging)
 Log.Logger = new LoggerConfiguration()
@@ -62,6 +72,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(
