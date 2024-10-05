@@ -9,16 +9,20 @@ using Newtonsoft.Json;
 using Serilog;
 using System;
 using System.Security.Claims;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace Health_Guard_Assistant.Web.Controllers
 {
     public class AccountController : Controller
     {
         private readonly IAuthService _authService;
+        private readonly ITokenProvider _tokenProvider;
 
-        public AccountController(IAuthService authService)
+
+        public AccountController(IAuthService authService, ITokenProvider tokenProvider)
         {
             _authService = authService ?? throw new ArgumentNullException(nameof(authService));
+            _tokenProvider = tokenProvider;
         }
 
         [HttpGet]
@@ -36,69 +40,76 @@ namespace Health_Guard_Assistant.Web.Controllers
                 return RedirectToAction("Error", "Home");
             }
         }
+        // POST method for Login
         [HttpPost]
         public async Task<IActionResult> Login(LoginRequestDto loginRequestDto)
         {
             if (!ModelState.IsValid)
             {
+                Log.Warning("Invalid login model state for user {Username}.", loginRequestDto.Email);
                 return View(loginRequestDto);
             }
 
             try
             {
                 // Call the login service
-                var responseDto = await _authService.LoginAsync(loginRequestDto);
+                ResponseDto responseDto = await _authService.LoginAsync(loginRequestDto);
 
+                // Check if login was successful
                 if (responseDto == null || !responseDto.IsSuccess)
                 {
+                    Log.Warning("Login failed for user {Username}.", loginRequestDto.Email);
                     ModelState.AddModelError("CustomError", responseDto?.Message ?? "Login failed. Please try again.");
                     TempData["error"] = responseDto?.Message ?? "Login failed. Please try again.";
                     return View(loginRequestDto);
                 }
 
+                // Safely deserialize login response
                 var loginResponseDto = responseDto.Result != null
                     ? JsonConvert.DeserializeObject<LoginResponseDto>(Convert.ToString(responseDto.Result))
                     : null;
 
                 if (loginResponseDto == null)
                 {
+                    Log.Warning("Login response deserialization failed for user {Username}.", loginRequestDto.Email);
                     TempData["error"] = "Login failed due to an internal error. Please try again.";
                     return View(loginRequestDto);
                 }
 
-                // Handle Authentication
-                var claims = new List<Claim>
-        {
-            new Claim(ClaimTypes.Name, loginResponseDto.User.Email),
-            new Claim(ClaimTypes.NameIdentifier, loginResponseDto.User.UserId.ToString())
-            // Add more claims if necessary
-        };
-
-                var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-                var principal = new ClaimsPrincipal(identity);
-
-                // Remember Me functionality - set cookie expiration based on checkbox value
-                var authProperties = new AuthenticationProperties
-                {
-                    IsPersistent = loginRequestDto.RememberMe,
-                    ExpiresUtc = loginRequestDto.RememberMe
-                        ? DateTimeOffset.UtcNow.AddDays(30) // 30 days if "Remember Me" checked
-                        : DateTimeOffset.UtcNow.AddHours(1) // 1 hour session if not checked
-                };
-
-                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal, authProperties);
-
-                // Redirect after successful login
+                // Sign in the user and set the token
+                await SignInUser(loginResponseDto);
+                _tokenProvider.SetToken(loginResponseDto.Token);
                 TempData["success"] = "Login successful!";
+                Log.Information("User {Username} logged in successfully.", loginRequestDto.Email);
                 return RedirectToAction("Index", "Home");
             }
             catch (Exception ex)
             {
-                TempData["error"] = "An error occurred during login.";
+                Log.Error(ex, "Error occurred during login for user {Username}.", loginRequestDto.Email);
+                TempData["error"] = "An error occurred while processing your login. Please try again.";
                 return View(loginRequestDto);
             }
         }
 
+        // Method to handle user sign-in with claims
+        private async Task SignInUser(LoginResponseDto model)
+        {
+            var handler = new JwtSecurityTokenHandler();
+            var jwt = handler.ReadJwtToken(model.Token);
+
+            // Create identity and add claims
+            var identity = new ClaimsIdentity(CookieAuthenticationDefaults.AuthenticationScheme);
+            identity.AddClaim(new Claim(JwtRegisteredClaimNames.Email, jwt.Claims.FirstOrDefault(u => u.Type == JwtRegisteredClaimNames.Email)?.Value ?? ""));
+            identity.AddClaim(new Claim(JwtRegisteredClaimNames.Sub, jwt.Claims.FirstOrDefault(u => u.Type == JwtRegisteredClaimNames.Sub)?.Value ?? ""));
+            identity.AddClaim(new Claim(JwtRegisteredClaimNames.Name, jwt.Claims.FirstOrDefault(u => u.Type == JwtRegisteredClaimNames.Name)?.Value ?? ""));
+
+            // Add role claim
+            identity.AddClaim(new Claim(ClaimTypes.Role, jwt.Claims.FirstOrDefault(u => u.Type == "role")?.Value ?? ""));
+
+            // Create a claims principal and sign the user in
+            var principal = new ClaimsPrincipal(identity);
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
+        }
         [HttpGet]
         public IActionResult Register()
         {
@@ -179,7 +190,7 @@ namespace Health_Guard_Assistant.Web.Controllers
             {
                 // Add logic for logging out if needed
                 await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-
+                _tokenProvider.ClearToken();
                 Log.Information("User logged out.");
                 return RedirectToAction(nameof(Login));
             }

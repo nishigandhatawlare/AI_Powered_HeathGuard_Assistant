@@ -46,6 +46,8 @@ builder.Services.AddHttpClient<IProviderService, ProviderService>();
 builder.Services.AddHttpClient<ILocationService, LocationService>();
 builder.Services.AddHttpClient<ISpecialityService, SpecialityService>();
 builder.Services.AddHttpClient<IAuthService, AuthService>();
+builder.Services.AddScoped<ITokenProvider, TokenProvider>();
+
 
 SD.AppointmentApiBase = builder.Configuration["ServiceUrls:AppointmentApi"];
 SD.AuthApiBase = builder.Configuration["ServiceUrls:AuthApi"];

@@ -7,6 +7,7 @@
         public const string RoleAdmin = "ADMIN";
         public const string RolePatient = "PATIENT";
         public const string RoleDoctor = "DOCTOR";
+        public const string TokenCookie = "JWTToken";
 
         public enum ApiType
         {

@@ -92,9 +92,9 @@ namespace Health_Guard_Assistant.services.AuthService.Service
                     Token = "" // Invalid password
                 };
             }
-
+            var roles = await _userManager.GetRolesAsync(user);
             // If user was found and password is valid, generate JWT Token
-            var token = _jwtTokenGenerator.GenerateToken(user);
+            var token = _jwtTokenGenerator.GenerateToken(user,roles);
 
             // Create a UserDto with necessary user information
             UserDto userDto = new()
