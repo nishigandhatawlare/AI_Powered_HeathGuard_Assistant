@@ -4,12 +4,14 @@ using Health_Guard_Assistant.services.AppointmentService.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Health_Guard_Assistant.services.AppointmentService.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class LocationsAPIController : ControllerBase
+	[Authorize]
+	public class LocationsAPIController : ControllerBase
     {
         private readonly AppDbContext _db;
         private ResponseDto _responce;

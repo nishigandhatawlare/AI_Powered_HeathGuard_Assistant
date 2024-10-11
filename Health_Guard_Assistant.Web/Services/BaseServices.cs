@@ -11,13 +11,16 @@ namespace Health_Guard_Assistant.Web.Services
     public class BaseServices : IBaseService
     {
         private readonly IHttpClientFactory _httpClientFactory;
+        private readonly ITokenProvider _tokenProvider;
 
-        public BaseServices(IHttpClientFactory httpClientFactory)
+
+        public BaseServices(IHttpClientFactory httpClientFactory, ITokenProvider tokenProvider)
         {
             _httpClientFactory = httpClientFactory ?? throw new ArgumentNullException(nameof(httpClientFactory));
+            _tokenProvider = tokenProvider;
         }
 
-        public async Task<ResponseDto?> SendAsync(RequestDto requestDto)
+        public async Task<ResponseDto?> SendAsync(RequestDto requestDto, bool withBearer = true)
         {
             Log.Information("Sending request to URL: {Url} with method: {Method}", requestDto.Url, requestDto.ApiType);
 
@@ -29,6 +32,12 @@ namespace Health_Guard_Assistant.Web.Services
                 // Create the HttpRequestMessage
                 HttpRequestMessage message = new();
                 message.Headers.Add("Accept", "application/json");
+
+                //token 
+                if (withBearer) {
+                    var token = _tokenProvider.GetToken();
+                    message.Headers.Add("Authorization", $"Bearer {token}");
+                }
 
                 // Set the request URI
                 message.RequestUri = new Uri(requestDto.Url);

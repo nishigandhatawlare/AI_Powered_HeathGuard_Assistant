@@ -20,19 +20,26 @@
         <div class="card-body">
             <!-- List of Providers -->
             <div class="row" id="providerList">
-                @foreach (var provider in Model.Providers)
+                @if (Model.Providers != null && Model.Providers.Any())
                 {
-                    <div class="col-md-4 mb-4">
-                        <div class="provider-card p-3 border rounded">
-                            <h5>@provider.Name</h5>
-                            <p>@provider.SpecialtyName | @provider.LocationName</p>
-                            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#appointmentModal"
-                                    data-provider-id="@provider.ProviderId"
-                                    data-provider-name="@provider.Name">
-                                Book Appointment
-                            </button>
+                    foreach (var provider in Model.Providers)
+                    {
+                        <div class="col-md-4 mb-4">
+                            <div class="provider-card p-3 border rounded">
+                                <h5>@provider.Name</h5>
+                                <p>@provider.SpecialtyName | @provider.LocationName</p>
+                                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#appointmentModal"
+                                        data-provider-id="@provider.ProviderId"
+                                        data-provider-name="@provider.Name">
+                                    Book Appointment
+                                </button>
+                            </div>
                         </div>
-                    </div>
+                    }
+                }
+                else
+                {
+                    <p>No providers available at this time.</p>
                 }
             </div>
         </div>
@@ -42,9 +49,9 @@
     <div class="card appointment-list mb-4">
         <div class="card-header">Your Appointments</div>
         <div class="card-body">
-            @if (Model.Appointments.Any())
+            @if (Model.Appointments != null && Model.Appointments.Any())
             {
-                <table class="table">
+                <table class="table table-striped">
                     <thead>
                         <tr>
                             <th>Date</th>
@@ -57,7 +64,7 @@
                     <tbody>
                         @foreach (var appointment in Model.Appointments)
                         {
-                            var provider = Model.Providers.FirstOrDefault(p => p.ProviderId == appointment.ProviderId);
+                            var provider = Model.Providers?.FirstOrDefault(p => p.ProviderId == appointment.ProviderId);
                             <tr>
                                 <td>@appointment.AppointmentDate.ToString("dd MMM yyyy")</td>
                                 <td>
@@ -100,7 +107,6 @@
             }
         </div>
     </div>
-
 </div>
 
 <!-- Modal for booking an appointment -->

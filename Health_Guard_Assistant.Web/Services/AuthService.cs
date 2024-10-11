@@ -28,7 +28,7 @@ namespace Health_Guard_Assistant.Web.Services
                 ApiType = ApiType.Post,
                 Data = forgotPasswordDto,
                 Url = AuthApiBase + "/api/auth/forgotpassword"
-            });
+            }, withBearer: false);
         }
 
         public async Task<ResponseDto>? LoginAsync(LoginRequestDto loginRequestDto)
@@ -38,7 +38,7 @@ namespace Health_Guard_Assistant.Web.Services
                 ApiType = ApiType.Post,
                 Data = loginRequestDto,
                 Url = AuthApiBase + "/api/auth/login"
-            });
+            }, withBearer: false);
         }
 
         public async Task<ResponseDto>? RegisterAsync(RegistrationRequestDto registrationRequestDto)
@@ -48,7 +48,7 @@ namespace Health_Guard_Assistant.Web.Services
                 ApiType = ApiType.Post,
                 Data = registrationRequestDto,
                 Url = AuthApiBase + "/api/auth/register"
-            });
+            }, withBearer: false);
         }
 
         public async Task<ResponseDto>? ResetPassword(ResetPasswordDto resetPasswordDto)
@@ -58,7 +58,7 @@ namespace Health_Guard_Assistant.Web.Services
                 ApiType = ApiType.Post,
                 Data = resetPasswordDto,
                 Url = AuthApiBase + "/api/auth/resetpassword"
-            });
+            }, withBearer: false);
         }
     }
 }

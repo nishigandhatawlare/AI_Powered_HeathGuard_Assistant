@@ -2,6 +2,7 @@
 using Health_Guard_Assistant.services.AppointmentService.Data;
 using Health_Guard_Assistant.services.AppointmentService.Models;
 using Health_Guard_Assistant.services.AppointmentService.Models.Dto;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -10,7 +11,8 @@ namespace Health_Guard_Assistant.services.AppointmentService.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ProvidersAPIController : ControllerBase
+	[Authorize]
+	public class ProvidersAPIController : ControllerBase
     {
         private readonly AppDbContext _db;
         private ResponseDto _responce;

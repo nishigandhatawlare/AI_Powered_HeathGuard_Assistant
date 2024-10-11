@@ -95,20 +95,55 @@ namespace Health_Guard_Assistant.Web.Controllers
         private async Task SignInUser(LoginResponseDto model)
         {
             var handler = new JwtSecurityTokenHandler();
-            var jwt = handler.ReadJwtToken(model.Token);
+            JwtSecurityToken jwt;
 
-            // Create identity and add claims
+            try
+            {
+                jwt = handler.ReadJwtToken(model.Token);
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException("Invalid JWT Token", ex);
+            }
+
             var identity = new ClaimsIdentity(CookieAuthenticationDefaults.AuthenticationScheme);
-            identity.AddClaim(new Claim(JwtRegisteredClaimNames.Email, jwt.Claims.FirstOrDefault(u => u.Type == JwtRegisteredClaimNames.Email)?.Value ?? ""));
-            identity.AddClaim(new Claim(JwtRegisteredClaimNames.Sub, jwt.Claims.FirstOrDefault(u => u.Type == JwtRegisteredClaimNames.Sub)?.Value ?? ""));
-            identity.AddClaim(new Claim(JwtRegisteredClaimNames.Name, jwt.Claims.FirstOrDefault(u => u.Type == JwtRegisteredClaimNames.Name)?.Value ?? ""));
 
-            // Add role claim
-            identity.AddClaim(new Claim(ClaimTypes.Role, jwt.Claims.FirstOrDefault(u => u.Type == "role")?.Value ?? ""));
+            var emailClaim = jwt.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Email)?.Value;
+            var subClaim = jwt.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Sub)?.Value;
+            var nameClaim = jwt.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Name)?.Value ?? emailClaim;
 
-            // Create a claims principal and sign the user in
+            var roleClaim = jwt.Claims.FirstOrDefault(c => c.Type == "role")?.Value;
+
+            if (!string.IsNullOrEmpty(emailClaim))
+            {
+                identity.AddClaim(new Claim(JwtRegisteredClaimNames.Email, emailClaim));
+            }
+
+            if (!string.IsNullOrEmpty(subClaim))
+            {
+                identity.AddClaim(new Claim(JwtRegisteredClaimNames.Sub, subClaim));
+            }
+
+            // Use the email as the fallback for the Name claim, like in your first example
+            if (!string.IsNullOrEmpty(nameClaim))
+            {
+                identity.AddClaim(new Claim(ClaimTypes.Name, nameClaim));
+            }
+
+            if (!string.IsNullOrEmpty(roleClaim))
+            {
+                identity.AddClaim(new Claim(ClaimTypes.Role, roleClaim));
+            }
+
             var principal = new ClaimsPrincipal(identity);
-            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
+
+            var authProperties = new AuthenticationProperties
+            {
+                IsPersistent = true,
+                ExpiresUtc = DateTimeOffset.UtcNow.AddHours(1)
+            };
+
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal, authProperties);
         }
         [HttpGet]
         public IActionResult Register()

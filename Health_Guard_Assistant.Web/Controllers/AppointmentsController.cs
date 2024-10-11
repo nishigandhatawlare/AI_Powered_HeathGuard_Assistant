@@ -24,59 +24,65 @@ namespace Health_Guard_Assistant.Web.Controllers
             _providerService = providerService ?? throw new ArgumentNullException(nameof(providerService));
         }
 
-        // GET: Appointments/Schedule
-        public async Task<IActionResult> Schedule()
-        {
-            var viewModel = new AppointmentViewModel();
+		// GET: Appointments/Schedule
+		// GET: Appointments/Schedule
+		public async Task<IActionResult> Schedule()
+		{
+			var viewModel = new AppointmentViewModel();
 
-            try
-            {
-                var appointmentResponse = await _appointmentsService.GetAppointmentsAsync();
-                if (appointmentResponse != null && appointmentResponse.IsSuccess)
-                {
-                    viewModel.Appointments = DeserializeResponse<List<AppointmentDto>>(appointmentResponse.Result);
-                    Log.Information("Successfully retrieved appointments.");
-                }
-                else
-                {
-                    ViewBag.ErrorMessage = "Failed to load appointments.";
-                    Log.Warning("Failed to load appointments: {Response}", appointmentResponse?.Message);
-                }
+			try
+			{
+				var appointmentResponse = await _appointmentsService.GetAppointmentsAsync();
+				if (appointmentResponse != null && appointmentResponse.IsSuccess)
+				{
+					viewModel.Appointments = DeserializeResponse<List<AppointmentDto>>(appointmentResponse.Result);
+					TempData["success"] = "Appointments loaded successfully.";
+					Log.Information("Successfully retrieved appointments.");
+				}
+				else
+				{
+					TempData["error"] = appointmentResponse?.Message ?? "Failed to load appointments.";
+					ViewBag.ErrorMessage = "Failed to load appointments.";
+					Log.Warning("Failed to load appointments: {Response}", appointmentResponse?.Message);
+				}
 
-                var specialtyResponse = await _specialityService.GetSpecialityAsync();
-                if (specialtyResponse != null && specialtyResponse.IsSuccess)
-                {
-                    viewModel.Specialties = DeserializeResponse<List<SpecialtyDto>>(specialtyResponse.Result);
-                    Log.Information("Successfully retrieved specialties.");
-                }
+				var specialtyResponse = await _specialityService.GetSpecialityAsync();
+				if (specialtyResponse != null && specialtyResponse.IsSuccess)
+				{
+					viewModel.Specialties = DeserializeResponse<List<SpecialtyDto>>(specialtyResponse.Result);
+					TempData["success"] = "Specialties loaded successfully.";
+					Log.Information("Successfully retrieved specialties.");
+				}
 
-                var locationResponse = await _locationService.GetLocationsAsync();
-                if (locationResponse != null && locationResponse.IsSuccess)
-                {
-                    viewModel.Locations = DeserializeResponse<List<LocationDto>>(locationResponse.Result);
-                    Log.Information("Successfully retrieved locations.");
-                }
+				var locationResponse = await _locationService.GetLocationsAsync();
+				if (locationResponse != null && locationResponse.IsSuccess)
+				{
+					viewModel.Locations = DeserializeResponse<List<LocationDto>>(locationResponse.Result);
+					TempData["success"] = "Locations loaded successfully.";
+					Log.Information("Successfully retrieved locations.");
+				}
 
-                var providersResponse = await _providerService.GetProviderAsync();
-                if (providersResponse != null && providersResponse.IsSuccess)
-                {
-                    viewModel.Providers = DeserializeResponse<List<HealthcareProviderDto>>(providersResponse.Result);
-                    Log.Information("Successfully retrieved providers.");
-                }
-            }
-            catch (Exception ex)
-            {
-                Log.Error(ex, "An error occurred while loading data for appointments schedule.");
-                TempData["error"] = "An error occurred while loading data: " + ex.Message;
-            }
+				var providersResponse = await _providerService.GetProviderAsync();
+				if (providersResponse != null && providersResponse.IsSuccess)
+				{
+					viewModel.Providers = DeserializeResponse<List<HealthcareProviderDto>>(providersResponse.Result);
+					TempData["success"] = "Providers loaded successfully.";
+					Log.Information("Successfully retrieved providers.");
+				}
+			}
+			catch (Exception ex)
+			{
+				Log.Error(ex, "An error occurred while loading data for appointments schedule.");
+				TempData["error"] = "An error occurred while loading data: " + ex.Message;
+			}
 
-            ViewData["ActivePage"] = "Appointments";
-            return View(viewModel);
-        }
+			ViewData["ActivePage"] = "Appointments";
+			return View(viewModel);
+		}
 
 
-        // POST: Appointments/Book
-        [HttpPost]
+		// POST: Appointments/Book
+		[HttpPost]
         public async Task<IActionResult> Book(AppointmentDto appointmentDto)
         {
             if (!ModelState.IsValid)
