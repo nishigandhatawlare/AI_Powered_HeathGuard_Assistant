@@ -23,8 +23,9 @@ namespace Health_Guard_Assistant.services.AppointmentService.Controllers
             _response = new ResponseDto();
             _mapper = mapper;
         }
-        // GET: api/appointments
+        // GET: api/appointments (Admin and Doctor can view all appointments)
         [HttpGet]
+        [Authorize(Roles = "ADMIN,DOCTOR")]
         public ResponseDto GetAppointments()
         {
             try
@@ -41,8 +42,10 @@ namespace Health_Guard_Assistant.services.AppointmentService.Controllers
             }
             return _response;
         }
-        // GET: api/appointments/{id}
+        // GET: api/appointments/{id} (Admin, Doctor, and Patient can view an appointment)
+        //(Patients should only access their own appointments)
         [HttpGet("{id:int}")]
+        [Authorize(Roles = "ADMIN,DOCTOR,PATIENT")]
         public ResponseDto GetAppointment(int id)
         {
             try
@@ -60,8 +63,9 @@ namespace Health_Guard_Assistant.services.AppointmentService.Controllers
             return _response;
         }
 
-        // POST: api/appointments
+        // POST: api/appointments (Admin and Doctor can create appointments, Patients can self-book)
         [HttpPost]
+        [Authorize(Roles = "ADMIN,DOCTOR,PATIENT")]
         public ResponseDto CreateAppointment([FromBody] AppointmentDto appointmentdto)
         {
             try
@@ -95,8 +99,9 @@ namespace Health_Guard_Assistant.services.AppointmentService.Controllers
             return _response;
         }
 
-        // PUT: api/appointments/{id}
+        // PUT: api/appointments/{id} (Admin and Doctor can update appointments)
         [HttpPut("{id}")]
+        [Authorize(Roles = "ADMIN,DOCTOR,PATIENT")]
         public ResponseDto UpdateAppointment(int id, [FromBody] AppointmentDto appointmentdto)
         {
             try
@@ -134,6 +139,7 @@ namespace Health_Guard_Assistant.services.AppointmentService.Controllers
 
         // DELETE: api/appointments/{id}
         [HttpDelete("{id}")]
+        [Authorize(Roles = "ADMIN,DOCTOR,PATIENT")]
         public ResponseDto DeleteAppointment(int id)
         {
             try
@@ -160,6 +166,35 @@ namespace Health_Guard_Assistant.services.AppointmentService.Controllers
                 _response.Message = ex.Message;
             }
             return _response;
+        }
+        
+        // GET: api/appointments/ByUser/{id} (Patients can view their own appointments)
+        [HttpGet("ByUser/{id}")]
+        [Authorize(Roles = "ADMIN,DOCTOR,PATIENT")]
+        public IActionResult GetAppointmentsByUserId(string id)
+        {
+            try
+            {
+                var appointments = _db.Appointments.Where(a => a.UserId == id).ToList();
+
+                if (!appointments.Any())
+                {
+                    _response.IsSuccess = false;
+                    _response.Message = $"No appointments found for user with ID {id}.";
+                    return NotFound(_response);
+                }
+
+                _response.Result = _mapper.Map<IEnumerable<AppointmentDto>>(appointments);
+                _response.IsSuccess = true;
+                _response.Message = $"Appointments for user ID {id} retrieved successfully.";
+                return Ok(_response);
+            }
+            catch (Exception ex)
+            {
+                _response.IsSuccess = false;
+                _response.Message = ex.Message;
+                return StatusCode(500, _response);
+            }
         }
     }
 }

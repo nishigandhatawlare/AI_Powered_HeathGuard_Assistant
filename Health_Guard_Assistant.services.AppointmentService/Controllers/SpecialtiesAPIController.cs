@@ -25,6 +25,7 @@ namespace Health_Guard_Assistant.services.AppointmentService.Controllers
         }
         // GET: api/appointments
         [HttpGet]
+        [Authorize(Roles = "ADMIN,DOCTOR,PATIENT")] // All roles can view specialties
         public ResponseDto GetSpecialties()
         {
             try
@@ -43,6 +44,7 @@ namespace Health_Guard_Assistant.services.AppointmentService.Controllers
         }
         // GET: api/appointments/{id}
         [HttpGet("{id:int}")]
+        [Authorize(Roles = "ADMIN,DOCTOR,PATIENT")] // All roles can view specialty details
         public ResponseDto GetSpecialty(int id)
         {
             try
@@ -62,6 +64,7 @@ namespace Health_Guard_Assistant.services.AppointmentService.Controllers
 
         // POST: api/appointments
         [HttpPost]
+        [Authorize(Roles = "ADMIN,DOCTOR")] // Only Admins and Doctors can create specialties
         public ResponseDto CreateSpecialty([FromBody] SpecialtyDto specialtyDto)
         {
             try
@@ -91,6 +94,7 @@ namespace Health_Guard_Assistant.services.AppointmentService.Controllers
 
         // PUT: api/appointments/{id}
         [HttpPut("{id:int}")]
+        [Authorize(Roles = "ADMIN,DOCTOR")] // Only Admins and Doctors can update specialties
         public ResponseDto UpdateSpecialty(int id, [FromBody] SpecialtyDto specialtyDto)
         {
             try
@@ -128,6 +132,8 @@ namespace Health_Guard_Assistant.services.AppointmentService.Controllers
 
         // DELETE: api/appointments/{id}
         [HttpDelete("{id}")]
+        [Authorize(Roles = "ADMIN")] // Only Admins and Doctors can update specialties
+
         public ResponseDto DeleteSpecialty(int id)
         {
             try

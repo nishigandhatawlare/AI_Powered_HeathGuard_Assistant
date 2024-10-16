@@ -32,16 +32,17 @@ namespace Health_Guard_Assistant.Web.Controllers
 
 			try
 			{
-				var appointmentResponse = await _appointmentsService.GetAppointmentsAsync();
+ string userId = User.Identity.Name; // Get the logged-in user's ID (username)
+
+    // Fetch appointments for the logged-in user
+    var appointmentResponse = await _appointmentsService.GetAppointmentsByUserIdAsync(userId);
 				if (appointmentResponse != null && appointmentResponse.IsSuccess)
 				{
 					viewModel.Appointments = DeserializeResponse<List<AppointmentDto>>(appointmentResponse.Result);
-					TempData["success"] = "Appointments loaded successfully.";
 					Log.Information("Successfully retrieved appointments.");
 				}
 				else
 				{
-					TempData["error"] = appointmentResponse?.Message ?? "Failed to load appointments.";
 					ViewBag.ErrorMessage = "Failed to load appointments.";
 					Log.Warning("Failed to load appointments: {Response}", appointmentResponse?.Message);
 				}
@@ -50,7 +51,6 @@ namespace Health_Guard_Assistant.Web.Controllers
 				if (specialtyResponse != null && specialtyResponse.IsSuccess)
 				{
 					viewModel.Specialties = DeserializeResponse<List<SpecialtyDto>>(specialtyResponse.Result);
-					TempData["success"] = "Specialties loaded successfully.";
 					Log.Information("Successfully retrieved specialties.");
 				}
 
@@ -58,7 +58,6 @@ namespace Health_Guard_Assistant.Web.Controllers
 				if (locationResponse != null && locationResponse.IsSuccess)
 				{
 					viewModel.Locations = DeserializeResponse<List<LocationDto>>(locationResponse.Result);
-					TempData["success"] = "Locations loaded successfully.";
 					Log.Information("Successfully retrieved locations.");
 				}
 
@@ -66,7 +65,6 @@ namespace Health_Guard_Assistant.Web.Controllers
 				if (providersResponse != null && providersResponse.IsSuccess)
 				{
 					viewModel.Providers = DeserializeResponse<List<HealthcareProviderDto>>(providersResponse.Result);
-					TempData["success"] = "Providers loaded successfully.";
 					Log.Information("Successfully retrieved providers.");
 				}
 			}
@@ -81,14 +79,18 @@ namespace Health_Guard_Assistant.Web.Controllers
 		}
 
 
-		// POST: Appointments/Book
-		[HttpPost]
+        // POST: Appointments/Book
+        [HttpPost]
         public async Task<IActionResult> Book(AppointmentDto appointmentDto)
         {
+            // Remove AppointmentId from ModelState validation
+            ModelState.Remove("AppointmentId");
+
+            // Check if the model state is valid
             if (!ModelState.IsValid)
             {
                 TempData["error"] = "Invalid data. Please review the form.";
-                Log.Warning("Invalid appointment data received.");
+                Log.Warning("Invalid appointment data received. Errors: {@ModelStateErrors}", ModelState.Values.SelectMany(v => v.Errors));
                 return RedirectToAction("Schedule");
             }
 
@@ -103,7 +105,9 @@ namespace Health_Guard_Assistant.Web.Controllers
                     {
                         TempData["success"] = "Successfully booked appointment with ID " + appointmentId.Value;
                         Log.Information("Successfully booked appointment with ID {AppointmentId}", appointmentId.Value);
-                        return RedirectToAction("Schedule", new { appointmentId });
+
+                        // Redirecting without query parameters
+                        return RedirectToAction("Schedule");
                     }
                     else
                     {
@@ -123,6 +127,7 @@ namespace Health_Guard_Assistant.Web.Controllers
                 TempData["error"] = "An error occurred while booking the appointment: " + ex.Message;
             }
 
+            // Redirecting to Schedule if there was an error
             return RedirectToAction("Schedule");
         }
 

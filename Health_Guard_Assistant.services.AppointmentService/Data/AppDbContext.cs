@@ -63,6 +63,7 @@ namespace Health_Guard_Assistant.services.AppointmentService.Data
                 {
                     AppointmentId = 1,
                     ProviderId = 1,
+                    UserId = "9d95de32-b1be-4cc9-8144-95674b103156",  // Add UserId here
                     PatientName = "Alice Johnson",
                     AppointmentDate = new DateTime(2024, 8, 30, 10, 0, 0),
                     Status = "Confirmed"
@@ -71,6 +72,7 @@ namespace Health_Guard_Assistant.services.AppointmentService.Data
                 {
                     AppointmentId = 2,
                     ProviderId = 2,
+                    UserId = "9d95de32-b1be-4cc9-8144-95674b103156",  // Add UserId here
                     PatientName = "Bob Brown",
                     AppointmentDate = new DateTime(2024, 8, 31, 14, 0, 0),
                     Status = "Pending"
@@ -79,6 +81,7 @@ namespace Health_Guard_Assistant.services.AppointmentService.Data
                 {
                     AppointmentId = 3,
                     ProviderId = 3,
+                    UserId = "9d95de32-b1be-4cc9-8144-95674b103156",  // Add UserId here
                     PatientName = "Charlie Davis",
                     AppointmentDate = new DateTime(2024, 9, 1, 9, 0, 0),
                     Status = "Confirmed"

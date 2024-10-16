@@ -25,6 +25,7 @@ namespace Health_Guard_Assistant.services.AppointmentService.Controllers
         }
        
         [HttpGet]
+        [Authorize(Roles = "ADMIN,DOCTOR,PATIENT")] // All roles can view providers
         public ResponseDto GetProviders()
         {
             try
@@ -50,10 +51,10 @@ namespace Health_Guard_Assistant.services.AppointmentService.Controllers
 
             return _responce;
         }
-
         // GET: api/providers/{id}
         [HttpGet("{id:int}")]
-        public  ResponseDto GetProvider(int id)
+        [Authorize(Roles = "ADMIN,DOCTOR,PATIENT")] // All roles can view provider details
+        public ResponseDto GetProvider(int id)
         {
             try
             {
@@ -72,6 +73,7 @@ namespace Health_Guard_Assistant.services.AppointmentService.Controllers
 
         // POST: api/providers
         [HttpPost]
+        [Authorize(Roles = "ADMIN,DOCTOR")] // Only Admins and Doctors can create providers
         public ResponseDto CreateProvider([FromBody] HealthcareProviderDto healthcareProviderDto)
         {
             try
@@ -102,6 +104,7 @@ namespace Health_Guard_Assistant.services.AppointmentService.Controllers
 
         // PUT: api/providers/{id}
         [HttpPut("{id:int}")]
+        [Authorize(Roles = "ADMIN,DOCTOR")] // Only Admins and Doctors can create providers
         public ResponseDto UpdateProvider(int id, [FromBody] HealthcareProviderDto healthcareProviderDto)
         {
             try
@@ -139,7 +142,8 @@ namespace Health_Guard_Assistant.services.AppointmentService.Controllers
         //DELETE: api/providers/{id
     
     [HttpDelete("{id:int}")]
-    public ResponseDto DeleteProvider(int id)
+        [Authorize(Roles = "ADMIN")] // Only Admins and Doctors can create providers
+        public ResponseDto DeleteProvider(int id)
     {
             try
             {

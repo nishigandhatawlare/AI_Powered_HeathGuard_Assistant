@@ -4,6 +4,7 @@ using Health_Guard_Assistant.services.AppointmentService.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Health_Guard_Assistant.services.AppointmentService.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241015103537_AddUserIdForeignKeyToAppointment")]
+    partial class AddUserIdForeignKeyToAppointment
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -62,7 +65,7 @@ namespace Health_Guard_Assistant.services.AppointmentService.Migrations
                             PatientName = "Alice Johnson",
                             ProviderId = 1,
                             Status = "Confirmed",
-                            UserId = "9d95de32-b1be-4cc9-8144-95674b103156"
+                            UserId = "user123"
                         },
                         new
                         {
@@ -71,7 +74,7 @@ namespace Health_Guard_Assistant.services.AppointmentService.Migrations
                             PatientName = "Bob Brown",
                             ProviderId = 2,
                             Status = "Pending",
-                            UserId = "9d95de32-b1be-4cc9-8144-95674b103156"
+                            UserId = "user456"
                         },
                         new
                         {
@@ -80,7 +83,7 @@ namespace Health_Guard_Assistant.services.AppointmentService.Migrations
                             PatientName = "Charlie Davis",
                             ProviderId = 3,
                             Status = "Confirmed",
-                            UserId = "9d95de32-b1be-4cc9-8144-95674b103156"
+                            UserId = "user789"
                         });
                 });
 

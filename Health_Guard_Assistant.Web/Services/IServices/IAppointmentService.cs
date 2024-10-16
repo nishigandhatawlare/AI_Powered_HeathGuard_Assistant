@@ -9,5 +9,7 @@ namespace Health_Guard_Assistant.Web.Services.IServices
         public Task<ResponseDto>? CreateAppointmentAsync(AppointmentDto appointmentDto);
         public Task<ResponseDto>? UpdateAppointmentAsync(int appointmentId,AppointmentDto appointmentDto);
         public Task<ResponseDto>? DeleteAppointmentAsync(int appointmentId);
+        Task<ResponseDto>? GetAppointmentsByUserIdAsync(string userId);
+
     }
 }

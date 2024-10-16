@@ -57,5 +57,13 @@ namespace Health_Guard_Assistant.Web.Services
                 Url = AppointmentApiBase + "/api/appointmentapi/"+appointmentId
             });
         }
+        public async Task<ResponseDto>? GetAppointmentsByUserIdAsync(string userId)
+        {
+            return await _baseService.SendAsync(new RequestDto()
+            {
+                ApiType = ApiType.Get,
+                Url = AppointmentApiBase + $"/api/appointmentapi/ByUser/{userId}"
+            });
+        }
     }
 }

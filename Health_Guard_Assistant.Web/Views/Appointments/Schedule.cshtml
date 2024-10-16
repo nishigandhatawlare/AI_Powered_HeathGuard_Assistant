@@ -121,6 +121,8 @@
                 <form method="post" asp-action="Book">
                     <input type="hidden" name="ProviderId" id="modalProviderId" value="" /> <!-- Hidden ProviderId -->
                     <input type="hidden" name="ProviderName" id="modalProviderName" value="" /> <!-- Hidden ProviderName -->
+                    <!-- Hidden field for User Email -->
+                    <input type="hidden" name="UserId" id="userEmail" value="@User.Identity.Name" /> <!-- Pass email to form -->
 
                     <div class="mb-3">
                         <label for="appointmentDate" class="form-label">Appointment Date</label>
@@ -128,7 +130,7 @@
                     </div>
                     <div class="mb-3">
                         <label for="patientName" class="form-label">Patient Name</label>
-                        <input asp-validation-for="patientName" type="text" class="form-control" id="patientName" name="PatientName" />
+                        <input asp-validation-for="PatientName" type="text" class="form-control" id="patientName" name="PatientName" />
                     </div>
                     <div class="mb-3">
                         <label for="status" class="form-label">Status</label>
@@ -146,7 +148,6 @@
         </div>
     </div>
 </div>
-
 <!-- Modal for updating an appointment -->
 <div class="modal fade" id="updateAppointmentModal" tabindex="-1" aria-labelledby="updateAppointmentModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -158,10 +159,13 @@
             <div class="modal-body">
                 <form method="post" asp-action="Update">
                     <input type="hidden" name="AppointmentId" id="updateAppointmentId" value="" /> <!-- Hidden AppointmentId -->
-                    <input type="hidden" name="ProviderId" id="updateProviderId" value="" /> <!-- Hidden AppointmentId -->
+                    <input type="hidden" name="ProviderId" id="updateProviderId" value="" /> <!-- Hidden ProviderId -->
+                    <!-- Hidden field for User Email -->
+                    <input type="hidden" name="UserId" id="userEmail" value="@User.Identity.Name" /> <!-- Pass email to form -->
+
                     <div class="mb-3">
                         <label for="patientName" class="form-label">Patient Name</label>
-                        <input asp-validation-for="patientName" type="text" class="form-control" id="patientName" name="PatientName" />
+                        <input asp-validation-for="PatientName" type="text" class="form-control" id="patientName" name="PatientName" required />
                     </div>
                     <div class="mb-3">
                         <label for="updateAppointmentDate" class="form-label">Appointment Date</label>

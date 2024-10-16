@@ -24,6 +24,7 @@ namespace Health_Guard_Assistant.services.AppointmentService.Controllers
         }
         // GET: api/providers
         [HttpGet]
+        [Authorize(Roles = "ADMIN,DOCTOR,PATIENT")]
         public ResponseDto GetLocations()
         {
             try
@@ -43,6 +44,7 @@ namespace Health_Guard_Assistant.services.AppointmentService.Controllers
 
         // GET: api/providers/{id}
         [HttpGet("{id:int}")]
+        [Authorize(Roles = "ADMIN,DOCTOR")] // Only ADMIN and DOCTOR can create
         public ResponseDto GetLocation(int id)
         {
             try
@@ -62,6 +64,7 @@ namespace Health_Guard_Assistant.services.AppointmentService.Controllers
 
         // POST: api/providers
         [HttpPost]
+        [Authorize(Roles = "ADMIN,DOCTOR")] // Only ADMIN and DOCTOR can create
         public ResponseDto CreateLocation([FromBody] LocationDto locationDto)
         {
             try
@@ -93,6 +96,7 @@ namespace Health_Guard_Assistant.services.AppointmentService.Controllers
 
         // PUT: api/providers/{id}
         [HttpPut("{id:int}")]
+        [Authorize(Roles = "ADMIN")] // Only ADMIN can delete
         public ResponseDto UpdateLocation(int id, [FromBody] LocationDto locationDto)
         {
             try
@@ -133,6 +137,7 @@ namespace Health_Guard_Assistant.services.AppointmentService.Controllers
         //DELETE: api/providers/{id
 
         [HttpDelete("{id:int}")]
+        [Authorize(Roles = "ADMIN")] // Only ADMIN can delete
         public ResponseDto DeleteProvider(int id)
         {
             try

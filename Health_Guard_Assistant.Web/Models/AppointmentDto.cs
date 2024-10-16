@@ -12,7 +12,10 @@ namespace Health_Guard_Assistant.Web.Models
         
         [StringLength(100)]
         public string? ProviderName { get; set; }  // Nullable ProviderName
-
+                                                   // Add UserId property
+        [Required] // Ensure this attribute is present
+        [EmailAddress] // Optional: to ensure it's a valid email format
+        public string UserId { get; set; } // Ensure UserId is included here 
         [Required]
         [StringLength(100)]
         public string PatientName { get; set; }
