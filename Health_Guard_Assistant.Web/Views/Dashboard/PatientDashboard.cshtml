@@ -1,0 +1,603 @@
+﻿@{
+    Layout = "_Layout";
+    ViewData["Title"] = "User Dashboard";
+}
+                <!-- Topbar -->
+                <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+
+                    <!-- Sidebar Toggle (Topbar) -->
+                    <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
+                        <i class="fa fa-bars"></i>
+                    </button>
+
+                    <!-- Topbar Search -->
+                    <form class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
+                        <div class="input-group">
+                            <input type="text" class="form-control bg-light border-0 small" placeholder="Search for..."
+                                   aria-label="Search" aria-describedby="basic-addon2">
+                            <div class="input-group-append">
+                                <button class="btn btn-primary" type="button">
+                                    <i class="fas fa-search fa-sm"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                    <!-- Topbar Navbar -->
+                    <ul class="navbar-nav ml-auto">
+
+                        <!-- Nav Item - Search Dropdown (Visible Only XS) -->
+                        <li class="nav-item dropdown no-arrow d-sm-none">
+                            <a class="nav-link dropdown-toggle" href="#" id="searchDropdown" role="button"
+                               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fas fa-search fa-fw"></i>
+                            </a>
+                            <!-- Dropdown - Messages -->
+                            <div class="dropdown-menu dropdown-menu-right p-3 shadow animated--grow-in"
+                                 aria-labelledby="searchDropdown">
+                                <form class="form-inline mr-auto w-100 navbar-search">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control bg-light border-0 small"
+                                               placeholder="Search for..." aria-label="Search"
+                                               aria-describedby="basic-addon2">
+                                        <div class="input-group-append">
+                                            <button class="btn btn-primary" type="button">
+                                                <i class="fas fa-search fa-sm"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </li>
+
+                        <!-- Nav Item - Alerts -->
+                        <li class="nav-item dropdown no-arrow mx-1">
+                            <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button"
+                               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fas fa-bell fa-fw"></i>
+                                <!-- Counter - Alerts -->
+                                <span class="badge badge-danger badge-counter">3+</span>
+                            </a>
+                            <!-- Dropdown - Alerts -->
+                            <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
+                                 aria-labelledby="alertsDropdown">
+                                <h6 class="dropdown-header">
+                                    Healthcare Alerts Center
+                                </h6>
+                                <!-- Alert Item 1 -->
+                                <a class="dropdown-item d-flex align-items-center" href="/patient-reports">
+                                    <div class="mr-3">
+                                        <div class="icon-circle bg-primary">
+                                            <i class="fas fa-file-alt text-white"></i>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="small text-gray-500">August 18, 2024</div>
+                                        <span class="font-weight-bold">New patient report available for review!</span>
+                                    </div>
+                                </a>
+                                <!-- Alert Item 2 -->
+                                <a class="dropdown-item d-flex align-items-center" href="/appointments">
+                                    <div class="mr-3">
+                                        <div class="icon-circle bg-success">
+                                            <i class="fas fa-calendar-check text-white"></i>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="small text-gray-500">August 18, 2024</div>
+                                        Upcoming appointment reminder for Dr. Smith at 2 PM.
+                                    </div>
+                                </a>
+                                <!-- Alert Item 3 -->
+                                <a class="dropdown-item d-flex align-items-center" href="/medications">
+                                    <div class="mr-3">
+                                        <div class="icon-circle bg-warning">
+                                            <i class="fas fa-exclamation-triangle text-white"></i>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="small text-gray-500">August 17, 2024</div>
+                                        Alert: Patient John Doe’s medication is overdue for refill.
+                                    </div>
+                                </a>
+                                <!-- Show All Alerts Link -->
+                                <a class="dropdown-item text-center small text-gray-500" href="/all-alerts">Show All Alerts</a>
+                            </div>
+                        </li>
+
+
+                        <!-- Nav Item - Messages -->
+                        <li class="nav-item dropdown no-arrow mx-1">
+                            <a class="nav-link dropdown-toggle" href="#" id="messagesDropdown" role="button"
+                               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fas fa-envelope fa-fw"></i>
+                                <!-- Counter - Messages -->
+                                <span class="badge badge-danger badge-counter">4</span>
+                            </a>
+                            <!-- Dropdown - Messages -->
+                            <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
+                                 aria-labelledby="messagesDropdown">
+                                <h6 class="dropdown-header">
+                                    Healthcare Message Center
+                                </h6>
+                                <!-- Message Item 1 -->
+                                <a class="dropdown-item d-flex align-items-center" href="/patient-messages">
+                                    <div class="dropdown-list-image mr-3">
+                                        <img class="rounded-circle" src="~/img/doctor_1.svg" alt="...">
+                                        <div class="status-indicator bg-success"></div>
+                                    </div>
+                                    <div class="font-weight-bold">
+                                        <div class="text-truncate">
+                                            "Hi, Dr. Smith. I have some questions about my recent lab results."
+                                        </div>
+                                        <div class="small text-gray-500">Patient A · 30m</div>
+                                    </div>
+                                </a>
+                                <!-- Message Item 2 -->
+                                <a class="dropdown-item d-flex align-items-center" href="/appointment-messages">
+                                    <div class="dropdown-list-image mr-3">
+                                        <img class="rounded-circle" src="~/img/doctor_2.svg" alt="...">
+                                        <div class="status-indicator"></div>
+                                    </div>
+                                    <div>
+                                        <div class="text-truncate">
+                                            "Reminder: Your appointment with Dr. Jones is scheduled for tomorrow at 10 AM."
+                                        </div>
+                                        <div class="small text-gray-500">System · 1d</div>
+                                    </div>
+                                </a>
+                                <!-- Message Item 3 -->
+                                <a class="dropdown-item d-flex align-items-center" href="/patient-feedback">
+                                    <div class="dropdown-list-image mr-3">
+                                        <img class="rounded-circle" src="~/img/doctor_3.svg" alt="...">
+                                        <div class="status-indicator bg-warning"></div>
+                                    </div>
+                                    <div>
+                                        <div class="text-truncate">
+                                            "Your feedback on our services is appreciated. Please let us know how we did."
+                                        </div>
+                                        <div class="small text-gray-500">Feedback · 2d</div>
+                                    </div>
+                                </a>
+                                <!-- Message Item 4 -->
+                                <a class="dropdown-item d-flex align-items-center" href="/system-notices">
+                                    <div class="dropdown-list-image mr-3">
+                                        <img class="rounded-circle" src="https://source.unsplash.com/Mv9hjnEUHR4/60x60" alt="...">
+                                        <div class="status-indicator bg-success"></div>
+                                    </div>
+                                    <div>
+                                        <div class="text-truncate">
+                                            "System maintenance scheduled for this weekend. Expect downtime."
+                                        </div>
+                                        <div class="small text-gray-500">Admin · 2w</div>
+                                    </div>
+                                </a>
+                                <!-- Read More Messages Link -->
+                                <a class="dropdown-item text-center small text-gray-500" href="/all-messages">Read More Messages</a>
+                            </div>
+                        </li>
+
+
+                        <div class="topbar-divider d-none d-sm-block"></div>
+
+                        <!-- Nav Item - User Information -->
+        <li class="nav-item dropdown no-arrow">
+            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
+               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <span class="mr-2 d-none d-lg-inline text-gray-600 small">John Doe</span>
+                <img class="img-profile rounded-circle" src="~/img/undraw_profile.svg" alt="Profile Picture">
+            </a>
+            <!-- Dropdown - User Information -->
+            <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
+                 aria-labelledby="userDropdown">
+                <!-- Profile Link -->
+                <a class="dropdown-item" href="/my-profile">
+                    <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
+                    My Profile
+                </a>
+                <!-- Appointments Link -->
+                <a class="dropdown-item" href="/my-appointments">
+                    <i class="fas fa-calendar-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+                    My Appointments
+                </a>
+                <!-- Medical Records Link -->
+                <a class="dropdown-item" href="/my-records">
+                    <i class="fas fa-file-medical-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+                    Medical Records
+                </a>
+                <!-- Divider -->
+                <div class="dropdown-divider"></div>
+                <!-- Logout Link -->
+                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
+                    <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+                    Logout
+                </a>
+            </div>
+        </li>
+
+                    </ul>
+                </nav>
+                <!-- End of Topbar -->
+                <!-- Begin Page Content -->
+                <div class="container-fluid">
+
+    <!-- Page Heading for Patient -->
+    <div class="d-flex align-items-center justify-content-between mb-4">
+        <a href="/view-my-records" class="btn btn-sm btn-primary shadow-sm">
+            <i class="fas fa-file-medical-alt fa-sm text-white-50"></i> View My Health Records
+        </a>
+        <a href="/download-appointment-summary" class="btn btn-sm btn-secondary shadow-sm">
+            <i class="fas fa-calendar-check fa-sm text-white-50"></i> Download Appointment Summary
+        </a>
+    </div>
+
+
+
+    <!-- Content Row for Patient -->
+    <div class="row">
+
+        <!-- My Appointments Card Example -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                My Appointments
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">3</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-calendar-alt fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Health Records Card Example -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                Health Records
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">5</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-file-medical-alt fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Upcoming Tests Card Example -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-info shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                                Upcoming Tests
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">2</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-vial fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Medication Schedule Card Example -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                Medication Schedule
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">4</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-pills fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="row">
+        <!-- Flex Container -->
+        <div class="d-flex flex-wrap w-100">
+            <!-- Health Metrics Section -->
+            <div class="col-xl-7 col-lg-7 d-flex align-items-stretch">
+                <div class="card shadow mb-4 flex-fill">
+                    <!-- Card Header -->
+                    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                        <h6 class="m-0 font-weight-bold text-primary">Health Metrics Overview</h6>
+                    </div>
+                    <!-- Card Body -->
+                    <div class="card-body">
+                        <!-- Vital Signs -->
+                        <div class="row">
+                            <!-- Heart Rate -->
+                            <div class="col-md-6 mb-4">
+                                <div class="card border-left-primary shadow h-100 py-2">
+                                    <div class="card-body">
+                                        <div class="row no-gutters align-items-center">
+                                            <div class="col mr-2">
+                                                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Heart Rate</div>
+                                                <div class="h5 mb-0 font-weight-bold text-gray-800">72 bpm</div>
+                                            </div>
+                                            <div class="col-auto">
+                                                <i class="fas fa-heartbeat fa-2x text-gray-300"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Blood Pressure -->
+                            <div class="col-md-6 mb-4">
+                                <div class="card border-left-success shadow h-100 py-2">
+                                    <div class="card-body">
+                                        <div class="row no-gutters align-items-center">
+                                            <div class="col mr-2">
+                                                <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Blood Pressure</div>
+                                                <div class="h5 mb-0 font-weight-bold text-gray-800">120/80 mmHg</div>
+                                            </div>
+                                            <div class="col-auto">
+                                                <i class="fas fa-tachometer-alt fa-2x text-gray-300"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Trends and Insights -->
+                        <div class="chart-area mb-4">
+                            <h6 class="m-0 font-weight-bold text-primary">Trends and Insights</h6>
+                            <canvas id="healthMetricsChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Medication Management -->
+            <div class="col-xl-5 col-lg-5 d-flex align-items-stretch">
+                <div class="card shadow mb-4 flex-fill">
+                    <!-- Card Header -->
+                    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                        <h6 class="m-0 font-weight-bold text-primary">Medication Management</h6>
+                    </div>
+                    <!-- Card Body -->
+                    <div class="card-body">
+                        <!-- Current Medications -->
+                        <div class="medication-management mb-4">
+                            <h6 class="font-weight-bold text-primary">Current Medications</h6>
+                            <ul class="list-unstyled">
+                                <li class="mb-2">
+                                    <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Medication Name:</div>
+                                    <div class="h6 mb-0 font-weight-bold text-gray-800">Aspirin - 100 mg - Morning, Evening</div>
+                                </li>
+                                <li class="mb-2">
+                                    <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Medication Name:</div>
+                                    <div class="h6 mb-0 font-weight-bold text-gray-800">Metformin - 500 mg - Morning</div>
+                                </li>
+                                <li class="mb-2">
+                                    <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Medication Name:</div>
+                                    <div class="h6 mb-0 font-weight-bold text-gray-800">Lisinopril - 10 mg - Evening</div>
+                                </li>
+                            </ul>
+                        </div>
+                        <!-- Reminders -->
+                        <div class="reminders">
+                            <h6 class="font-weight-bold text-primary">Upcoming Reminders</h6>
+                            <p class="text-gray-800 mb-1">Aspirin - Evening - 8:00 PM</p>
+                            <p class="text-gray-800 mb-1">Lisinopril - Evening - 8:30 PM</p>
+                            <button class="btn btn-success btn-sm mt-2">Mark as Taken</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+
+    <!-- Content Row -->
+    <div class="row d-flex align-items-stretch">
+
+        <!-- Patient Information -->
+        <div class="col-lg-6 mb-4 d-flex">
+            <div class="card shadow mb-4 w-100 h-100">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Patient Information</h6>
+                </div>
+                <div class="card-body">
+                    <h4 class="small font-weight-bold">Name: <span class="float-right">John Doe</span></h4>
+                    <h4 class="small font-weight-bold">Age: <span class="float-right">30</span></h4>
+                    <h4 class="small font-weight-bold">Gender: <span class="float-right">Male</span></h4>
+                    <h4 class="small font-weight-bold">Contact: <span class="float-right">(123) 456-7890</span></h4>
+                    <h4 class="small font-weight-bold">Address: <span class="float-right">123 Main St, City, State</span></h4>
+                </div>
+            </div>
+        </div>
+
+        <!-- Medical History -->
+        <div class="col-lg-6 mb-4 d-flex">
+            <div class="card shadow mb-4 w-100 h-100">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Medical History</h6>
+                </div>
+                <div class="card-body">
+                    <h4 class="small font-weight-bold text-primary">Previous Conditions</h4>
+                    <ul class="list-unstyled mb-4">
+                        <li class="mb-2">
+                            <div class="text-xs font-weight-bold text-gray-800">Asthma</div>
+                        </li>
+                        <li class="mb-2">
+                            <div class="text-xs font-weight-bold text-gray-800">Hypertension</div>
+                        </li>
+                    </ul>
+
+                    <h4 class="small font-weight-bold text-primary">Current Medications</h4>
+                    <ul class="list-unstyled mb-4">
+                        <li class="mb-2">
+                            <div class="text-xs font-weight-bold text-gray-800">Albuterol Inhaler</div>
+                        </li>
+                        <li class="mb-2">
+                            <div class="text-xs font-weight-bold text-gray-800">Lisinopril</div>
+                        </li>
+                    </ul>
+
+                    <button class="btn btn-primary btn-block">Update Medical History</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Appointment History -->
+        <div class="col-lg-6 mb-4 d-flex">
+            <div class="card shadow mb-4 w-100 h-100">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Appointment History</h6>
+                </div>
+                <div class="card-body">
+                    <h4 class="small font-weight-bold text-primary">Past Appointments</h4>
+                    <ul class="list-unstyled mb-4">
+                        <li class="mb-2">
+                            <div class="text-xs font-weight-bold text-gray-800">June 15, 2024 - Dr. Alice</div>
+                            <div class="small text-gray-600">General Check-up - All clear.</div>
+                        </li>
+                        <li class="mb-2">
+                            <div class="text-xs font-weight-bold text-gray-800">April 22, 2024 - Dr. Bob</div>
+                            <div class="small text-gray-600">Follow-up on Asthma - Medication adjusted.</div>
+                        </li>
+                    </ul>
+
+                    <h4 class="small font-weight-bold text-primary">Upcoming Appointments</h4>
+                    <ul class="list-unstyled mb-4">
+                        <li class="mb-2">
+                            <div class="text-xs font-weight-bold text-gray-800">Sept 10, 2024 - Dr. John Doe</div>
+                            <div class="small text-gray-600">General Check-up at 10:00 AM</div>
+                        </li>
+                    </ul>
+
+                    <button class="btn btn-primary btn-block">Book New Appointment</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Health Reports -->
+        <div class="col-lg-6 mb-4 d-flex">
+            <div class="card shadow mb-4 w-100 h-100">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Health Reports</h6>
+                </div>
+                <div class="card-body">
+                    <h4 class="small font-weight-bold text-primary">Latest Report</h4>
+                    <p class="text-gray-800">The latest report indicates stable vitals and improved overall health.</p>
+                    <div class="mb-4">
+                        <button class="btn btn-primary btn-sm mr-2">Download Report</button>
+                        <button class="btn btn-secondary btn-sm">Share Report</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- AI Chatbot/Assistant -->
+        <div class="col-lg-6 mb-4">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">AI Chatbot/Assistant</h6>
+                </div>
+                <div class="card-body">
+                    <h4 class="small font-weight-bold text-primary">Ask Your Assistant</h4>
+                    <div class="chat-interface border p-3 mb-4" style="height: 200px; overflow-y: auto;">
+                        <!-- Chat messages go here -->
+                    </div>
+                    <input type="text" class="form-control" placeholder="Type your message here...">
+                    <button class="btn btn-primary btn-block mt-2">Send</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <div class="row d-flex align-items-stretch">
+        <!-- Lifestyle and Wellness Tips -->
+        <div class="col-xl-12 mb-4">
+            <div class="card shadow mb-4">
+                <!-- Card Header -->
+                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                    <h6 class="m-0 font-weight-bold text-primary">Patient Dashboard - Lifestyle and Wellness</h6>
+                </div>
+                <!-- Card Body -->
+                <div class="card-body">
+                    <!-- Daily Tips -->
+                    <div class="daily-tips mb-4">
+                        <h6 class="font-weight-bold text-primary">Daily Wellness Tips</h6>
+                        <p class="text-gray-800">Remember to stay hydrated and try to incorporate at least 30 minutes of physical activity into your daily routine. Don't forget to take breaks and manage your stress effectively!</p>
+                    </div>
+                    <!-- Personal Health Goals -->
+                    <div class="personal-goals">
+                        <h6 class="font-weight-bold text-primary">Your Health Goals</h6>
+                        <p class="text-gray-800">This month's goal is to complete 10,000 steps daily. Track your progress and set mini-goals to stay motivated!</p>
+                        <div class="progress mb-4">
+                            <div class="progress-bar bg-success" role="progressbar" style="width: 50%"
+                                 aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                        <button class="btn btn-primary btn-block">Track Your Progress</button>
+                    </div>
+                    <!-- Upcoming Appointments -->
+                    <div class="upcoming-appointments mt-4">
+                        <h6 class="font-weight-bold text-primary">Upcoming Appointments</h6>
+                        <ul class="list-unstyled">
+                            <li><strong>Sept 10, 2024:</strong> General Check-up with Dr. John Doe at 10:00 AM</li>
+                            <li><strong>Sept 15, 2024:</strong> Dental Cleaning with Dr. Jane Smith at 1:00 PM</li>
+                            <li><strong>Sept 20, 2024:</strong> Eye Examination with Dr. Mike Johnson at 3:30 PM</li>
+                        </ul>
+                        <button class="btn btn-primary btn-block">View All Appointments</button>
+                    </div>
+                    <!-- Health Education Resources -->
+                    <div class="health-resources mt-4">
+                        <h6 class="font-weight-bold text-primary">Health Education Resources</h6>
+                        <p class="text-gray-800">Explore articles and videos on maintaining a healthy lifestyle, managing stress, and understanding your health conditions.</p>
+                        <button class="btn btn-primary btn-block">Explore Resources</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+                </div>
+                <!-- /.container-fluid -->
+    <!-- Logout Modal-->
+    <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                    <a class="btn btn-primary" href="login.html">Logout</a>
+                </div>
+            </div>
+        </div>
+    </div>

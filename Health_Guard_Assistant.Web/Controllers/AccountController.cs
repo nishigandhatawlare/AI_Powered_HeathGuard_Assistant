@@ -41,6 +41,7 @@ namespace Health_Guard_Assistant.Web.Controllers
             }
         }
         // POST method for Login
+        // POST method for Login
         [HttpPost]
         public async Task<IActionResult> Login(LoginRequestDto loginRequestDto)
         {
@@ -81,13 +82,35 @@ namespace Health_Guard_Assistant.Web.Controllers
                 _tokenProvider.SetToken(loginResponseDto.Token);
                 TempData["success"] = "Login successful!";
                 Log.Information("User {Username} logged in successfully.", loginRequestDto.Email);
-                return RedirectToAction("Index", "Home");
+
+                // Redirect to a new action to access claims
+                return RedirectToAction("PostLogin"); // Redirecting to another action
             }
             catch (Exception ex)
             {
                 Log.Error(ex, "Error occurred during login for user {Username}.", loginRequestDto.Email);
                 TempData["error"] = "An error occurred while processing your login. Please try again.";
                 return View(loginRequestDto);
+            }
+        }
+
+        // New action to handle post-login logic
+        public IActionResult PostLogin()
+        {
+            // Access claims here
+            var userRole = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
+
+            // Logic based on user role
+            switch (userRole)
+            {
+                case "ADMIN":
+                    return RedirectToAction("Index", "Dashboard");
+                case "DOCTOR":
+                    return RedirectToAction("Index", "Dashboard");
+                case "PATIENT":
+                    return RedirectToAction("Index", "Dashboard");
+                default:
+                    return RedirectToAction("Index", "Home"); // Default redirect
             }
         }
 
@@ -108,12 +131,12 @@ namespace Health_Guard_Assistant.Web.Controllers
 
             var identity = new ClaimsIdentity(CookieAuthenticationDefaults.AuthenticationScheme);
 
+            // Extract claims from the JWT token
             var emailClaim = jwt.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Email)?.Value;
             var subClaim = jwt.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Sub)?.Value;
             var nameClaim = jwt.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Name)?.Value ?? emailClaim;
 
-            var roleClaim = jwt.Claims.FirstOrDefault(c => c.Type == "role")?.Value;
-
+            // Add claims to the identity
             if (!string.IsNullOrEmpty(emailClaim))
             {
                 identity.AddClaim(new Claim(JwtRegisteredClaimNames.Email, emailClaim));
@@ -124,16 +147,19 @@ namespace Health_Guard_Assistant.Web.Controllers
                 identity.AddClaim(new Claim(JwtRegisteredClaimNames.Sub, subClaim));
             }
 
-            // Use the email as the fallback for the Name claim, like in your first example
             if (!string.IsNullOrEmpty(nameClaim))
             {
                 identity.AddClaim(new Claim(ClaimTypes.Name, nameClaim));
             }
 
+            // Extract and add role claim
+            var roleClaim = jwt.Claims.FirstOrDefault(u => u.Type == "role")?.Value; // Use null conditional operator
+
             if (!string.IsNullOrEmpty(roleClaim))
             {
                 identity.AddClaim(new Claim(ClaimTypes.Role, roleClaim));
             }
+
 
             var principal = new ClaimsPrincipal(identity);
 
@@ -143,8 +169,10 @@ namespace Health_Guard_Assistant.Web.Controllers
                 ExpiresUtc = DateTimeOffset.UtcNow.AddHours(1)
             };
 
+            // Sign in the user with claims
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal, authProperties);
         }
+
         [HttpGet]
         public IActionResult Register()
         {
