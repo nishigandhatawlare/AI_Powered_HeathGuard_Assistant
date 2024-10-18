@@ -10,8 +10,17 @@ namespace Health_Guard_Assistant.services.MedicationService
         {
             var mappingConfig = new MapperConfiguration(config =>
             {
-                config.CreateMap<MedicationDto, Medication>();
-                config.CreateMap<Medication, MedicationDto>();
+                // Medication mappings
+                config.CreateMap<MedicationDto, Medication>()
+                      .ReverseMap(); // Bidirectional mapping
+
+                // Prescription mappings
+                config.CreateMap<PrescriptionDto, Prescription>()
+                      .ReverseMap(); // Bidirectional mapping
+
+                // Adherence mappings
+                config.CreateMap<AdherenceDto, Adherence>()
+                      .ReverseMap(); // Bidirectional mapping
             });
             return mappingConfig;
         }

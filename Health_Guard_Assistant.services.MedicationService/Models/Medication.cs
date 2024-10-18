@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Collections.Generic;
 
 namespace Health_Guard_Assistant.services.MedicationService.Models
 {
@@ -12,12 +13,22 @@ namespace Health_Guard_Assistant.services.MedicationService.Models
 
         public string UserId { get; set; }  // New field to store the logged-in patient's user ID
 
-        [Required]
-        public string Dosage { get; set; }
+        public string DosageForm { get; set; } // e.g., Tablet, Syrup
 
-        [Required]
-        public string Timing { get; set; }
+        [StringLength(100)]
+        public string Frequency { get; set; } // e.g., Once a day
 
-        public bool InteractionWarning { get; set; }
+        public string AdministrationRoute { get; set; } // e.g., Oral, IV
+
+        public string SideEffects { get; set; } // e.g., Nausea, Dizziness
+
+        public string Contraindications { get; set; } // e.g., Allergies
+
+        public string MedicationImageUrl { get; set; } // URL to medication image
+
+        public string MedicationGuideUrl { get; set; } // URL to official medication guide
+
+        // Navigation property to prescriptions
+        public virtual ICollection<Prescription> Prescriptions { get; set; } = new List<Prescription>();
     }
 }
