@@ -1,54 +1,53 @@
 ﻿@{
     ViewData["Title"] = "Symptoms Checker";
-    Layout = "_Layout";  
+    Layout = "_Layout";
 }
 
-    <div class="container">
-        <!-- Symptom Entry Form -->
-        <div class="card">
-            <div class="card-header">Enter Your Symptoms</div>
-            <div class="card-body">
-                <form id="symptomForm">
-                    <div class="mb-3">
-                        <label for="symptom" class="form-label">Symptom</label>
-                        <input type="text" class="form-control" id="symptom" placeholder="E.g., Headache, Fever">
-                    </div>
-                    <div class="mb-3">
-                        <label for="duration" class="form-label">Duration</label>
-                        <input type="text" class="form-control" id="duration" placeholder="E.g., 2 days, 1 week">
-                    </div>
-                    <div class="mb-3">
-                        <label for="severity" class="form-label">Severity</label>
-                        <select class="form-select" id="severity">
-                            <option selected>Choose severity</option>
-                            <option value="1">Mild</option>
-                            <option value="2">Moderate</option>
-                            <option value="3">Severe</option>
-                        </select>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Check Symptoms</button>
-                </form>
-            </div>
-        </div>
-
-        <!-- AI Recommendations -->
-        <div class="card">
-            <div class="card-header">Recommendations</div>
-            <div class="card-body">
-                <p id="recommendation" class="recommendation">Please enter your symptoms to receive recommendations.</p>
-                <button class="btn btn-primary" id="bookConsultation" style="display: none;">Book Consultation</button>
-            </div>
-        </div>
-
-        <!-- Educational Content -->
-        <div class="card education-content">
-            <div class="card-header">Learn More About Common Symptoms</div>
-            <div class="card-body">
-                <h4>Headache</h4>
-                <p>A headache can be caused by a variety of factors, including stress, dehydration, or tension. It's important to identify any accompanying symptoms to determine the best course of action.</p>
-                <h4>Fever</h4>
-                <p>Fever is a common symptom of many conditions, including infections and inflammatory diseases. Monitoring the duration and severity of the fever can help in determining if medical attention is needed.</p>
-            </div>
+<div class="container mt-5">
+    <!-- Symptom Entry Form -->
+    <div class="card mb-4">
+        <div class="card-header">Enter Your Symptoms</div>
+        <div class="card-body">
+            <form id="symptomForm">
+                <div class="mb-3">
+                    <label for="symptom" class="form-label">Symptom</label>
+                    <input type="text" class="form-control" id="symptom" placeholder="E.g., Headache, Fever">
+                </div>
+                <div class="mb-3">
+                    <label for="duration" class="form-label">Duration</label>
+                    <input type="text" class="form-control" id="duration" placeholder="E.g., 2 days, 1 week">
+                </div>
+                <div class="mb-3">
+                    <label for="severity" class="form-label">Severity</label>
+                    <select class="form-select" id="severity">
+                        <option selected>Choose severity</option>
+                        <option value="1">Mild</option>
+                        <option value="2">Moderate</option>
+                        <option value="3">Severe</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary">Check Symptoms</button>
+            </form>
         </div>
     </div>
 
+    <!-- AI Recommendations -->
+    <div class="card mb-4">
+        <div class="card-header">Recommendations</div>
+        <div class="card-body">
+            <p id="recommendation" class="recommendation">Please enter your symptoms to receive recommendations.</p>
+            <button class="btn btn-primary" id="bookConsultation" style="display: none;">Book Consultation</button>
+        </div>
+    </div>
+
+    <!-- Educational Content -->
+    <div class="card">
+        <div class="card-header">Learn More About Common Symptoms</div>
+        <div class="card-body">
+            <h4>Headache</h4>
+            <p>A headache can be caused by a variety of factors, including stress, dehydration, or tension. It's important to identify any accompanying symptoms to determine the best course of action.</p>
+            <h4>Fever</h4>
+            <p>Fever is a common symptom of many conditions, including infections and inflammatory diseases. Monitoring the duration and severity of the fever can help in determining if medical attention is needed.</p>
+        </div>
+    </div>
+</div>

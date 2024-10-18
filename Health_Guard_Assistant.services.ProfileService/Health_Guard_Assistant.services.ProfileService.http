@@ -1,6 +1,1 @@
 @Health_Guard_Assistant.services.ProfileService_HostAddress = http://localhost:5062
-
-GET {{Health_Guard_Assistant.services.ProfileService_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###

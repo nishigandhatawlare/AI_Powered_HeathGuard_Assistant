@@ -2,116 +2,118 @@
     Layout = "_Layout";
     ViewData["Title"] = "Feedback and Support";
 }
-   <div class="container-fluid mt-5">
-        <!-- Feedback Form -->
-        <div class="row mt-4">
-            <div class="col-md-6">
-                <div class="card mb-4">
-                    <div class="card-header">
-                        <h5>Feedback Form</h5>
-                    </div>
-                    <div class="card-body">
-                        <form>
-                            <div class="mb-3">
-                                <label for="name" class="form-label">Name</label>
-                                <input type="text" class="form-control" id="name" placeholder="Your Name">
-                            </div>
-                            <div class="mb-3">
-                                <label for="email" class="form-label">Email address</label>
-                                <input type="email" class="form-control" id="email" placeholder="Your Email">
-                            </div>
-                            <div class="mb-3">
-                                <label for="feedback" class="form-label">Feedback</label>
-                                <textarea class="form-control" id="feedback" rows="4" placeholder="Your Feedback"></textarea>
-                            </div>
-                            <button type="submit" class="btn btn-primary">Submit Feedback</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
 
-            <!-- FAQ Section -->
-            <div class="col-md-6">
-                <div class="card mb-4">
-                    <div class="card-header">
-                        <h5>Frequently Asked Questions (FAQ)</h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="faq-item">
-                            <h6>What is AI Healthcare Assistant?</h6>
-                            <p>AI Healthcare Assistant is a digital tool designed to provide medical information and support to users using artificial intelligence.</p>
+<div class="container-fluid mt-5">
+    <div class="row mt-4">
+
+        <!-- Feedback Form -->
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5>Feedback Form</h5>
+                </div>
+                <div class="card-body">
+                    <form>
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Name</label>
+                            <input type="text" class="form-control" id="name" placeholder="Your Name" required>
                         </div>
-                        <div class="faq-item">
-                            <h6>How can I reset my password?</h6>
-                            <p>You can reset your password by clicking on the 'Forgot Password' link on the login page and following the instructions.</p>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email address</label>
+                            <input type="email" class="form-control" id="email" placeholder="Your Email" required>
                         </div>
-                        <div class="faq-item">
-                            <h6>How do I contact support?</h6>
-                            <p>You can contact support through the contact form below or use the live chat feature available on our site.</p>
+                        <div class="mb-3">
+                            <label for="feedback" class="form-label">Feedback</label>
+                            <textarea class="form-control" id="feedback" rows="4" placeholder="Your Feedback" required></textarea>
                         </div>
-                    </div>
+                        <button type="submit" class="btn btn-primary">Submit Feedback</button>
+                    </form>
                 </div>
             </div>
         </div>
 
-        <!-- Contact Form and Live Chat -->
-        <div class="row mt-4">
-            <div class="col-md-6">
-                <div class="card mb-4">
-                    <div class="card-header">
-                        <h5>Contact Us</h5>
-                    </div>
-                    <div class="card-body">
-                        <form>
-                            <div class="mb-3">
-                                <label for="contactName" class="form-label">Name</label>
-                                <input type="text" class="form-control" id="contactName" placeholder="Your Name">
-                            </div>
-                            <div class="mb-3">
-                                <label for="contactEmail" class="form-label">Email address</label>
-                                <input type="email" class="form-control" id="contactEmail" placeholder="Your Email">
-                            </div>
-                            <div class="mb-3">
-                                <label for="message" class="form-label">Message</label>
-                                <textarea class="form-control" id="message" rows="4" placeholder="Your Message"></textarea>
-                            </div>
-                            <button type="submit" class="btn btn-primary">Send Message</button>
-                        </form>
-                        <div class="mt-4">
-                            <h6>Live Chat</h6>
-                            <p>Need immediate help? <a href="#">Start a live chat with our support team</a>.</p>
-                        </div>
-                    </div>
+        <!-- FAQ Section -->
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5>Frequently Asked Questions (FAQ)</h5>
                 </div>
-            </div>
-
-            <!-- Rating Services -->
-            <div class="col-md-6">
-                <div class="card mb-4">
-                    <div class="card-header">
-                        <h5>Rate Our Services</h5>
+                <div class="card-body">
+                    <div class="faq-item mb-3">
+                        <h6>What is AI Healthcare Assistant?</h6>
+                        <p>AI Healthcare Assistant is a digital tool designed to provide medical information and support to users using artificial intelligence.</p>
                     </div>
-                    <div class="card-body">
-                        <form>
-                            <div class="mb-3">
-                                <label class="form-label">Rate Your Experience</label>
-                                <div class="rating">
-                                    <input type="radio" id="star5" name="rating" value="5">
-                                    <label for="star5" title="5 stars"><i class="fas fa-star"></i></label>
-                                    <input type="radio" id="star4" name="rating" value="4">
-                                    <label for="star4" title="4 stars"><i class="fas fa-star"></i></label>
-                                    <input type="radio" id="star3" name="rating" value="3">
-                                    <label for="star3" title="3 stars"><i class="fas fa-star"></i></label>
-                                    <input type="radio" id="star2" name="rating" value="2">
-                                    <label for="star2" title="2 stars"><i class="fas fa-star"></i></label>
-                                    <input type="radio" id="star1" name="rating" value="1">
-                                    <label for="star1" title="1 star"><i class="fas fa-star"></i></label>
-                                </div>
-                            </div>
-                            <button type="submit" class="btn btn-primary">Submit Rating</button>
-                        </form>
+                    <div class="faq-item mb-3">
+                        <h6>How can I reset my password?</h6>
+                        <p>You can reset your password by clicking on the 'Forgot Password' link on the login page and following the instructions.</p>
+                    </div>
+                    <div class="faq-item mb-3">
+                        <h6>How do I contact support?</h6>
+                        <p>You can contact support through the contact form below or use the live chat feature available on our site.</p>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- Contact Form and Live Chat -->
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5>Contact Us</h5>
+                </div>
+                <div class="card-body">
+                    <form>
+                        <div class="mb-3">
+                            <label for="contactName" class="form-label">Name</label>
+                            <input type="text" class="form-control" id="contactName" placeholder="Your Name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="contactEmail" class="form-label">Email address</label>
+                            <input type="email" class="form-control" id="contactEmail" placeholder="Your Email" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="message" class="form-label">Message</label>
+                            <textarea class="form-control" id="message" rows="4" placeholder="Your Message" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Send Message</button>
+                    </form>
+                    <div class="mt-4">
+                        <h6>Live Chat</h6>
+                        <p>Need immediate help? <a href="#">Start a live chat with our support team</a>.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Rating Services -->
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5>Rate Our Services</h5>
+                </div>
+                <div class="card-body">
+                    <form>
+                        <div class="mb-3">
+                            <label class="form-label">Rate Your Experience</label>
+                            <div class="rating">
+                                <input type="radio" id="star5" name="rating" value="5">
+                                <label for="star5" title="5 stars"><i class="fas fa-star"></i></label>
+                                <input type="radio" id="star4" name="rating" value="4">
+                                <label for="star4" title="4 stars"><i class="fas fa-star"></i></label>
+                                <input type="radio" id="star3" name="rating" value="3">
+                                <label for="star3" title="3 stars"><i class="fas fa-star"></i></label>
+                                <input type="radio" id="star2" name="rating" value="2">
+                                <label for="star2" title="2 stars"><i class="fas fa-star"></i></label>
+                                <input type="radio" id="star1" name="rating" value="1">
+                                <label for="star1" title="1 star"><i class="fas fa-star"></i></label>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Submit Rating</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
